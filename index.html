@@ -90,6 +90,49 @@
     .share-btn:hover {
       background: #181818;
     }
+    .chat-box {
+      max-height: 300px;
+      overflow-y: auto;
+      text-align: left;
+      padding-right: 8px;
+      margin-bottom: 12px;
+    }
+    .chat-message {
+      background: #111;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 10px;
+      padding: 8px 12px;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+    .chat-message .name {
+      color: #00ffe1;
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+    .chat-input {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .chat-input input {
+      flex: 1;
+      background: #111;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      color: #fff;
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+    .chat-input button {
+      background: #00ffe1;
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -112,139 +155,172 @@
     </div>
 
     <div class="section">
-      <div class="title">Partner Projects</div>
-      <div class="carousel" id="partnerCarousel">
-        <!-- Partner logos will be inserted here -->
+      <div class="title">Vault Hangout</div>
+      <div class="chat-box" id="chatBox"></div>
+      <div class="chat-input">
+        <input id="chatInput" type="text" placeholder="Say something cool..." />
+        <button onclick="sendMessage()">Send</button>
       </div>
+    </div>
+
+    <div class="section">
+      <div class="title">Partner Projects</div>
+      <div class="carousel" id="partnerCarousel"></div>
     </div>
 
     <div class="section">
       <div class="title">Share Your Profile</div>
       <button class="share-btn" onclick="shareToX()">Post to 𝕏</button>
     </div>
+  </div>
 
-        <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-      import {
-        getFirestore, doc, getDoc, collection, getDocs, query, orderBy, limit, where
-      } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import {
+      getFirestore, doc, getDoc, collection, getDocs, addDoc, query,
+      orderBy, limit, where, onSnapshot, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-      const firebaseConfig = {
-        apiKey: "AIzaSyCJwqDFZtf1PkZwAalOaf2_7eWtej5HIfA",
-        authDomain: "y2k-arcade.firebaseapp.com",
-        projectId: "y2k-arcade",
-        storageBucket: "y2k-arcade.appspot.com",
-        messagingSenderId: "1063043176357",
-        appId: "1:1063043176357:web:20bc22e9cbf269ff40fa4c"
-      };
+    const firebaseConfig = {
+      apiKey: "AIzaSyCJwqDFZtf1PkZwAalOaf2_7eWtej5HIfA",
+      authDomain: "y2k-arcade.firebaseapp.com",
+      projectId: "y2k-arcade",
+      storageBucket: "y2k-arcade.appspot.com",
+      messagingSenderId: "1063043176357",
+      appId: "1:1063043176357:web:20bc22e9cbf269ff40fa4c"
+    };
 
-      const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    let currentWallet = "";
 
-      let currentWallet = "";
-
-      async function connectWalletAndLoadData() {
-        if (!window.ethereum) {
-          alert("Please install MetaMask");
-          return;
-        }
-
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        await provider.send("eth_requestAccounts", []);
-        const signer = provider.getSigner();
-        const address = await signer.getAddress();
-        currentWallet = address.toLowerCase();
-
-        document.getElementById("walletDisplay").textContent =
-          currentWallet.slice(0, 6) + "..." + currentWallet.slice(-4);
-
-        const docRef = doc(db, "users", currentWallet);
-        const snap = await getDoc(docRef);
-        const y2k = snap.exists() ? (snap.data().earnings || 0) : 0;
-
-        document.getElementById("balanceBadge").textContent = `Y2K Winnings: ${y2k}`;
+    async function connectWalletAndLoadData() {
+      if (!window.ethereum) {
+        alert("Please install MetaMask");
+        return;
       }
 
-      async function loadMVP() {
-        const usersRef = collection(db, "users");
-        const topEarnerQuery = query(usersRef, orderBy("earnings", "desc"), limit(1));
-        const topSnap = await getDocs(topEarnerQuery);
-        if (!topSnap.empty) {
-          const top = topSnap.docs[0].data();
-          const name = top.username || "anon";
-          const earn = top.earnings || 0;
-          document.getElementById("mvpUser").textContent = "@" + name;
-          document.getElementById("mvpEarnings").textContent = earn + " Y2K Earned";
-        }
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      await provider.send("eth_requestAccounts", []);
+      const signer = provider.getSigner();
+      const address = await signer.getAddress();
+      currentWallet = address.toLowerCase();
+
+      document.getElementById("walletDisplay").textContent =
+        currentWallet.slice(0, 6) + "..." + currentWallet.slice(-4);
+
+      const docRef = doc(db, "users", currentWallet);
+      const snap = await getDoc(docRef);
+      const y2k = snap.exists() ? (snap.data().earnings || 0) : 0;
+
+      document.getElementById("balanceBadge").textContent = `Y2K Winnings: ${y2k}`;
+    }
+
+    async function loadMVP() {
+      const usersRef = collection(db, "users");
+      const topEarnerQuery = query(usersRef, orderBy("earnings", "desc"), limit(1));
+      const topSnap = await getDocs(topEarnerQuery);
+      if (!topSnap.empty) {
+        const top = topSnap.docs[0].data();
+        const name = top.username || "anon";
+        const earn = top.earnings || 0;
+        document.getElementById("mvpUser").textContent = "@" + name;
+        document.getElementById("mvpEarnings").textContent = earn + " Y2K Earned";
+      }
+    }
+
+    async function loadNewPlayers() {
+      const now = Date.now();
+      const cutoff = now - 48 * 60 * 60 * 1000;
+
+      const q = query(collection(db, "users"), where("createdAt", ">", cutoff));
+      const snap = await getDocs(q);
+      const container = document.getElementById("newPlayers");
+      if (snap.empty) {
+        container.textContent = "No new users yet.";
+        return;
       }
 
-      async function loadNewPlayers() {
-        const now = Date.now();
-        const cutoff = now - 48 * 60 * 60 * 1000;
+      container.innerHTML = "";
+      snap.forEach(doc => {
+        const data = doc.data();
+        const name = data.username || "anon";
+        container.innerHTML += `<div class="badge">@${name}</div>`;
+      });
+    }
 
-        const q = query(collection(db, "users"), where("createdAt", ">", cutoff));
-        const snap = await getDocs(q);
+    async function loadPartners() {
+      const partners = [
+        { name: "DOJO", logo: "https://i.imgur.com/CUZcb5O.png", link: "https://twitter.com/CRODOJO" },
+        { name: "CroFighter", logo: "https://i.imgur.com/7gNV9od.png", link: "https://twitter.com/crofighter" },
+        { name: "Cards of Cronos", logo: "https://i.imgur.com/o1bHvXN.png", link: "https://twitter.com/CardsofCronos" },
+      ];
 
-        const container = document.getElementById("newPlayers");
-        if (snap.empty) {
-          container.textContent = "No new users yet.";
-          return;
-        }
+      const container = document.getElementById("partnerCarousel");
+      partners.forEach(partner => {
+        const el = document.createElement("div");
+        el.className = "carousel-item";
+        el.innerHTML = `
+          <a href="${partner.link}" target="_blank">
+            <img src="${partner.logo}" alt="${partner.name}" />
+            <p>${partner.name}</p>
+          </a>
+        `;
+        container.appendChild(el);
+      });
+    }
 
-        container.innerHTML = "";
-        snap.forEach(doc => {
+    async function sendMessage() {
+      const input = document.getElementById("chatInput");
+      const text = input.value.trim();
+      if (!text || !currentWallet) return;
+
+      await addDoc(collection(db, "chat"), {
+        text,
+        createdAt: serverTimestamp(),
+        uid: currentWallet,
+        username: currentWallet.slice(2, 6)
+      });
+
+      input.value = "";
+    }
+
+    function listenToChat() {
+      const q = query(collection(db, "chat"), orderBy("createdAt", "desc"), limit(25));
+      onSnapshot(q, snap => {
+        const box = document.getElementById("chatBox");
+        box.innerHTML = "";
+        snap.docs.reverse().forEach(doc => {
           const data = doc.data();
-          const name = data.username || "anon";
-          container.innerHTML += `<div class="badge">@${name}</div>`;
+          const msg = document.createElement("div");
+          msg.className = "chat-message";
+          msg.innerHTML = `<div class="name">@${data.username}</div><div>${data.text}</div>`;
+          box.appendChild(msg);
         });
-      }
+        box.scrollTop = box.scrollHeight;
+      });
+    }
 
-      async function loadPartners() {
-        const partners = [
-          { name: "DOJO", logo: "https://i.imgur.com/CUZcb5O.png", link: "https://twitter.com/CRODOJO" },
-          { name: "CroFighter", logo: "https://i.imgur.com/7gNV9od.png", link: "https://twitter.com/crofighter" },
-          { name: "Cards of Cronos", logo: "https://i.imgur.com/o1bHvXN.png", link: "https://twitter.com/CardsofCronos" },
-        ];
+    function shareToX() {
+      const messages = [
+        "Just stepped into the Quantum Vault — where legends are minted. #CROFAM #Puushfuncronos",
+        "This ain’t your average DApp. Welcome to the gambling multiverse. #CROFAM #Puushfuncronos",
+        "Built different. Vaulted forever. #QuantumVault #CROFAM #Puushfuncronos",
+        "What happens in the Vault... gets burned in Y2K. #CROFAM #Puushfuncronos",
+        "Stacking wins and spotlight. Welcome to the Vault. #CROFAM #Puushfuncronos",
+        "The vault ain't just for coins — it's for history. #CROFAM #Puushfuncronos"
+      ];
 
-        const container = document.getElementById("partnerCarousel");
-        partners.forEach(partner => {
-          const el = document.createElement("div");
-          el.className = "carousel-item";
-          el.innerHTML = `
-            <a href="${partner.link}" target="_blank">
-              <img src="${partner.logo}" alt="${partner.name}" />
-              <p>${partner.name}</p>
-            </a>
-          `;
-          container.appendChild(el);
-        });
-      }
+      const msg = encodeURIComponent(messages[Math.floor(Math.random() * messages.length)]);
+      const url = encodeURIComponent("https://quantum-vault-y2kxroast.netlify.app/");
+      window.open(`https://twitter.com/intent/tweet?text=${msg}&url=${url}`, "_blank");
+    }
 
-      connectWalletAndLoadData();
-      loadMVP();
-      loadNewPlayers();
-      loadPartners();
-
-                function shareToX() {
-        const messages = [
-          "Just stepped into the Quantum Vault — where legends are minted. #CROFAM #Puushfuncronos",
-          "This ain’t your average DApp. Welcome to the gambling multiverse. #CROFAM #Puushfuncronos",
-          "Built different. Vaulted forever. #QuantumVault #CROFAM #Puushfuncronos",
-          "What happens in the Vault... gets burned in Y2K. #CROFAM #Puushfuncronos",
-          "Fresh from the forge — my Quantum profile just dropped. #CROFAM #Puushfuncronos",
-          "Stacking wins and spotlight. Welcome to the Vault. #CROFAM #Puushfuncronos",
-          "The vault ain't just for coins — it's for history. #CROFAM #Puushfuncronos",
-          "Risk is the new flex. Step inside. #QuantumLounge #CROFAM #Puushfuncronos",
-          "My Quantum badge is live. What’s yours look like? #CROFAM #Puushfuncronos",
-          "I came, I saw, I burned tokens. Welcome to the vault. #CROFAM #Puushfuncronos"
-        ];
-
-        const msg = encodeURIComponent(messages[Math.floor(Math.random() * messages.length)]);
-        const url = encodeURIComponent("https://quantum-vault-y2kxroast.netlify.app/");
-        window.open(`https://twitter.com/intent/tweet?text=${msg}&url=${url}`, "_blank");
-      }
-
-      document.getElementById("shareBtn").addEventListener("click", shareToX);
-    </script>
-  </body>
+    connectWalletAndLoadData();
+    loadMVP();
+    loadNewPlayers();
+    loadPartners();
+    listenToChat();
+  </script>
+</body>
 </html>
