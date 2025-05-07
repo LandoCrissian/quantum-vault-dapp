@@ -186,6 +186,17 @@
       <div id="newPlayers">Loading...</div>
     </div>
 
+    <!-- Vault Chat Room -->
+<div class="section">
+  <div class="title">Vault Chat Room</div>
+  <div id="chatBox" style="max-height: 220px; overflow-y: auto; font-size: 13px; background:#111; padding:12px; border-radius:10px; margin-bottom:12px;"></div>
+  <div style="display:flex; gap:8px;">
+    <input type="text" id="chatInput" placeholder="Type your message..." style="flex:1; padding:10px; border-radius:8px; border:1px solid #444; background:#000; color:#00ffe1;">
+    <button id="sendMsgBtn" style="padding:10px 16px; border:none; border-radius:8px; background:#00ffe1; color:#000; font-weight:bold;">Send</button>
+  </div>
+</div>
+    
+
     <div class="modal" id="badgeModal">
       <div class="modal-content">
         <h2>Edit Player Badge</h2>
@@ -329,6 +340,38 @@
   connectWalletAndLoad();
   loadMVP();
   loadNewPlayers();
+
+      import {
+  onSnapshot, addDoc, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+// Public Chat – Listen for new messages
+const chatRef = collection(db, "chat");
+onSnapshot(query(chatRef, orderBy("timestamp", "asc"), limit(100)), (snap) => {
+  const box = document.getElementById("chatBox");
+  box.innerHTML = "";
+  snap.forEach(doc => {
+    const m = doc.data();
+    const msg = document.createElement("div");
+    msg.innerHTML = `<strong style="color:#00ffe1;">@${m.name || "anon"}:</strong> ${m.text}`;
+    box.appendChild(msg);
+  });
+  box.scrollTop = box.scrollHeight;
+});
+
+// Send message
+document.getElementById("sendMsgBtn").addEventListener("click", async () => {
+  const input = document.getElementById("chatInput");
+  const text = input.value.trim();
+  if (!text) return;
+  await addDoc(chatRef, {
+    name: document.getElementById("badgeNickname").textContent || "anon",
+    text,
+    timestamp: serverTimestamp()
+  });
+  input.value = "";
+});
+      
 </script>
 </body>
 </html>
