@@ -84,6 +84,47 @@
       font-size: 13px; border-radius: 20px;
       font-weight: bold;
     }
+    .player-badge {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+}
+.player-badge:hover {
+  background: rgba(255,255,255,0.05);
+}
+.player-badge img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid #00ffe1;
+  object-fit: cover;
+}
+.badge-info {
+  text-align: left;
+}
+.nickname {
+  font-weight: bold;
+  font-size: 16px;
+  color: #00ffe1;
+}
+.handle {
+  font-size: 13px;
+  color: #ccc;
+}
+.badge-stats {
+  font-size: 12px;
+  margin-top: 6px;
+  color: #aaa;
+  display: flex;
+  gap: 10px;
+}
   </style>
 </head>
 <body>
@@ -106,6 +147,18 @@
     <div class="section">
       <div class="title">Welcome Back</div>
       <div id="walletDisplay" class="wallet-info">Connecting wallet...</div>
+      <div class="player-badge" id="playerBadge">
+  <img id="badgePFP" src="https://api.dicebear.com/6.x/pixel-art/svg?seed=anon" alt="PFP" />
+  <div class="badge-info">
+    <div class="nickname" id="badgeNickname">@anon</div>
+    <div class="handle" id="badgeHandle">@handle</div>
+    <div class="badge-stats">
+      <span id="badgeGames">Games: 0</span>
+      <span id="badgeWins">Wins: 0</span>
+      <span id="badgeY2K">Y2K: 0</span>
+    </div>
+  </div>
+</div>
       <div class="balance-badges">
         <div id="y2kBalance" class="badge">Y2K: 0</div>
         <div id="croBalance" class="badge">CRO: 0</div>
