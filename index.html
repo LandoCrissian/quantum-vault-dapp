@@ -214,138 +214,130 @@
     </div>
 
     <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-  import {
-    getFirestore, doc, getDoc, setDoc, collection, getDocs, query,
-    orderBy, limit, where
-  } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyCJwqDFZtf1PkZwAalOaf2_7eWtej5HIfA",
-    authDomain: "y2k-arcade.firebaseapp.com",
-    projectId: "y2k-arcade",
-    storageBucket: "y2k-arcade.appspot.com",
-    messagingSenderId: "1063043176357",
-    appId: "1:1063043176357:web:20bc22e9cbf269ff40fa4c"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  let currentWallet = "";
-
-  async function connectWalletAndLoad() {
-    if (!window.ethereum) {
-      alert("Please install MetaMask");
-      return;
-    }
-
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    await provider.send("eth_requestAccounts", []);
-    const signer = provider.getSigner();
-    currentWallet = (await signer.getAddress()).toLowerCase();
-
-    const short = `${currentWallet.slice(0, 6)}...${currentWallet.slice(-4)}`;
-    document.getElementById("walletDisplay").textContent = "Welcome back: " + short;
-
-    const userSnap = await getDoc(doc(db, "users", currentWallet));
-    if (userSnap.exists()) {
-      const data = userSnap.data();
-      document.getElementById("badgePFP").src = data.pfpUrl || `https://api.dicebear.com/6.x/pixel-art/svg?seed=anon`;
-      document.getElementById("badgeNickname").textContent = data.username || "anon";
-      document.getElementById("badgeHandle").textContent = data.xHandle ? `𝕏: @${data.xHandle}` : "𝕏: N/A";
-      document.getElementById("badgeY2K").textContent = `Y2K: ${data.earnings || 0}`;
-      document.getElementById("badgeGames").textContent = `Games: ${data.games || 0}`;
-      document.getElementById("badgeWins").textContent = `Wins: ${data.wins || 0}`;
-
-      if (data.badgeColor) {
-        document.getElementById("playerBadge").style.borderColor = data.badgeColor;
-        document.getElementById("editRimColor").value = data.badgeColor;
-      }
-
-      document.getElementById("editNickname").value = data.username || "";
-      document.getElementById("editHandle").value = data.xHandle || "";
-    }
-
-    try {
-      const croBal = await provider.getBalance(currentWallet);
-      const cro = parseFloat(ethers.utils.formatEther(croBal)).toFixed(2);
-      document.getElementById("croBalance").textContent = `CRO: ${cro}`;
-    } catch {
-      document.getElementById("croBalance").textContent = "CRO: --";
-    }
-
-    try {
-      const y2kContract = new ethers.Contract(
-        "0xB4Df7d2A736Cc391146bB0dF4277E8F68247Ac6d",
-        ["function balanceOf(address) view returns (uint256)"],
-        provider
-      );
-      const raw = await y2kContract.balanceOf(currentWallet);
-      const bal = parseFloat(ethers.utils.formatUnits(raw, 18)).toFixed(2);
-      document.getElementById("y2kBalance").textContent = `Y2K: ${bal}`;
-    } catch {
-      document.getElementById("y2kBalance").textContent = "Y2K: --";
-    }
-  }
-
-  async function loadMVP() {
-    const topSnap = await getDocs(query(collection(db, "users"), orderBy("earnings", "desc"), limit(1)));
-    if (!topSnap.empty) {
-      const top = topSnap.docs[0].data();
-      document.getElementById("mvpUser").textContent = "@" + (top.username || "anon");
-      document.getElementById("mvpEarnings").textContent = `${top.earnings || 0} Y2K Earned`;
-    }
-  }
-
-  async function loadNewPlayers() {
-    const cutoff = Date.now() - (48 * 60 * 60 * 1000);
-    const q = query(collection(db, "users"), where("createdAt", ">", cutoff));
-    const snap = await getDocs(q);
-    const box = document.getElementById("newPlayers");
-    box.innerHTML = snap.empty ? "No new users yet." : "";
-    snap.forEach(doc => {
-      const u = doc.data();
-      const tag = document.createElement("div");
-      tag.className = "badge";
-      tag.textContent = "@" + (u.username || "anon");
-      box.appendChild(tag);
-    });
-  }
-
-  document.getElementById("playerBadge").addEventListener("click", () => {
-    document.getElementById("badgeModal").style.display = "flex";
-  });
-
-  document.getElementById("cancelBadgeBtn").addEventListener("click", () => {
-    document.getElementById("badgeModal").style.display = "none";
-  });
-
-  document.getElementById("saveBadgeBtn").addEventListener("click", async () => {
-    const nickname = document.getElementById("editNickname").value.trim();
-    const handle = document.getElementById("editHandle").value.trim();
-    const rimColor = document.getElementById("editRimColor").value;
-
-    await setDoc(doc(db, "users", currentWallet), {
-      username: nickname,
-      xHandle: handle,
-      badgeColor: rimColor
-    }, { merge: true });
-
-    document.getElementById("badgeNickname").textContent = nickname;
-    document.getElementById("badgeHandle").textContent = handle ? `𝕏: @${handle}` : "𝕏: N/A";
-    document.getElementById("playerBadge").style.borderColor = rimColor;
-    document.getElementById("badgeModal").style.display = "none";
-  });
-
-  connectWalletAndLoad();
-  loadMVP();
-  loadNewPlayers();
-
-      import {
-  onSnapshot, addDoc, serverTimestamp
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import {
+  getFirestore, doc, getDoc, setDoc, collection, getDocs, query,
+  orderBy, limit, where, onSnapshot, addDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-// Public Chat – Listen for new messages
+const firebaseConfig = {
+  apiKey: "AIzaSyCJwqDFZtf1PkZwAalOaf2_7eWtej5HIfA",
+  authDomain: "y2k-arcade.firebaseapp.com",
+  projectId: "y2k-arcade",
+  storageBucket: "y2k-arcade.appspot.com",
+  messagingSenderId: "1063043176357",
+  appId: "1:1063043176357:web:20bc22e9cbf269ff40fa4c"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+let currentWallet = "";
+
+async function connectWalletAndLoad() {
+  if (!window.ethereum) {
+    alert("Please install MetaMask");
+    return;
+  }
+
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  await provider.send("eth_requestAccounts", []);
+  const signer = provider.getSigner();
+  currentWallet = (await signer.getAddress()).toLowerCase();
+
+  const short = `${currentWallet.slice(0, 6)}...${currentWallet.slice(-4)}`;
+  document.getElementById("walletDisplay").textContent = "Welcome back: " + short;
+
+  const userSnap = await getDoc(doc(db, "users", currentWallet));
+  if (userSnap.exists()) {
+    const data = userSnap.data();
+    document.getElementById("badgePFP").src = data.pfpUrl || `https://api.dicebear.com/6.x/pixel-art/svg?seed=anon`;
+    document.getElementById("badgeNickname").textContent = data.username || "anon";
+    document.getElementById("badgeHandle").textContent = data.xHandle ? `𝕏: @${data.xHandle}` : "𝕏: N/A";
+    document.getElementById("badgeY2K").textContent = `Y2K: ${data.earnings || 0}`;
+    document.getElementById("badgeGames").textContent = `Games: ${data.games || 0}`;
+    document.getElementById("badgeWins").textContent = `Wins: ${data.wins || 0}`;
+
+    if (data.badgeColor) {
+      document.getElementById("playerBadge").style.borderColor = data.badgeColor;
+      document.getElementById("editRimColor").value = data.badgeColor;
+    }
+
+    document.getElementById("editNickname").value = data.username || "";
+    document.getElementById("editHandle").value = data.xHandle || "";
+  }
+
+  try {
+    const croBal = await provider.getBalance(currentWallet);
+    const cro = parseFloat(ethers.utils.formatEther(croBal)).toFixed(2);
+    document.getElementById("croBalance").textContent = `CRO: ${cro}`;
+  } catch {
+    document.getElementById("croBalance").textContent = "CRO: --";
+  }
+
+  try {
+    const y2kContract = new ethers.Contract(
+      "0xB4Df7d2A736Cc391146bB0dF4277E8F68247Ac6d",
+      ["function balanceOf(address) view returns (uint256)"],
+      provider
+    );
+    const raw = await y2kContract.balanceOf(currentWallet);
+    const bal = parseFloat(ethers.utils.formatUnits(raw, 18)).toFixed(2);
+    document.getElementById("y2kBalance").textContent = `Y2K: ${bal}`;
+  } catch {
+    document.getElementById("y2kBalance").textContent = "Y2K: --";
+  }
+}
+
+async function loadMVP() {
+  const topSnap = await getDocs(query(collection(db, "users"), orderBy("earnings", "desc"), limit(1)));
+  if (!topSnap.empty) {
+    const top = topSnap.docs[0].data();
+    document.getElementById("mvpUser").textContent = "@" + (top.username || "anon");
+    document.getElementById("mvpEarnings").textContent = `${top.earnings || 0} Y2K Earned`;
+  }
+}
+
+async function loadNewPlayers() {
+  const cutoff = Date.now() - (48 * 60 * 60 * 1000);
+  const q = query(collection(db, "users"), where("createdAt", ">", cutoff));
+  const snap = await getDocs(q);
+  const box = document.getElementById("newPlayers");
+  box.innerHTML = snap.empty ? "No new users yet." : "";
+  snap.forEach(doc => {
+    const u = doc.data();
+    const tag = document.createElement("div");
+    tag.className = "badge";
+    tag.textContent = "@" + (u.username || "anon");
+    box.appendChild(tag);
+  });
+}
+
+document.getElementById("playerBadge").addEventListener("click", () => {
+  document.getElementById("badgeModal").style.display = "flex";
+});
+
+document.getElementById("cancelBadgeBtn").addEventListener("click", () => {
+  document.getElementById("badgeModal").style.display = "none";
+});
+
+document.getElementById("saveBadgeBtn").addEventListener("click", async () => {
+  const nickname = document.getElementById("editNickname").value.trim();
+  const handle = document.getElementById("editHandle").value.trim();
+  const rimColor = document.getElementById("editRimColor").value;
+
+  await setDoc(doc(db, "users", currentWallet), {
+    username: nickname,
+    xHandle: handle,
+    badgeColor: rimColor
+  }, { merge: true });
+
+  document.getElementById("badgeNickname").textContent = nickname;
+  document.getElementById("badgeHandle").textContent = handle ? `𝕏: @${handle}` : "𝕏: N/A";
+  document.getElementById("playerBadge").style.borderColor = rimColor;
+  document.getElementById("badgeModal").style.display = "none";
+});
+
+// CHAT: Real-time listener
 const chatRef = collection(db, "chat");
 onSnapshot(query(chatRef, orderBy("timestamp", "asc"), limit(100)), (snap) => {
   const box = document.getElementById("chatBox");
@@ -359,7 +351,7 @@ onSnapshot(query(chatRef, orderBy("timestamp", "asc"), limit(100)), (snap) => {
   box.scrollTop = box.scrollHeight;
 });
 
-// Send message
+// CHAT: Send message
 document.getElementById("sendMsgBtn").addEventListener("click", async () => {
   const input = document.getElementById("chatInput");
   const text = input.value.trim();
@@ -371,7 +363,10 @@ document.getElementById("sendMsgBtn").addEventListener("click", async () => {
   });
   input.value = "";
 });
-      
+
+connectWalletAndLoad();
+loadMVP();
+loadNewPlayers();
 </script>
 </body>
 </html>
