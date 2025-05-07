@@ -1,234 +1,308 @@
+<!-- Quantum Vault – Full Working HTML with Interactive Player Badge Modal -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quantum Vault Lounge</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <title>Quantum Vault – Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
     body {
-      margin: 0;
-      font-family: 'Space Grotesk', sans-serif;
-      background: linear-gradient(160deg, #0f0f0f, #1a1a1a);
+      background: #000;
       color: #fff;
+      padding: 16px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding-bottom: 100px;
+    }
+    .section {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
       padding: 24px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(14px);
+    }
+    .title {
+      font-size: 20px;
+      color: #00ffe1;
+      margin-bottom: 12px;
+    }
+    .wallet {
+      font-size: 13px;
+      color: #aaa;
+      margin-bottom: 8px;
+      word-break: break-word;
+    }
+    .badge {
+      display: inline-block;
+      background: #00ffe1;
+      color: #000;
+      padding: 4px 10px;
+      font-size: 12px;
+      border-radius: 6px;
+      margin: 6px 4px;
+      font-weight: bold;
     }
     .player-badge {
       display: flex;
       align-items: center;
-      background: rgba(255,255,255,0.04);
-      border: 2px solid #00ffe1;
+      background: #111;
       border-radius: 14px;
-      padding: 12px 16px;
-      margin-bottom: 20px;
-      max-width: 420px;
+      padding: 12px;
+      margin-top: 10px;
+      border: 2px solid #00ffe1;
       cursor: pointer;
-      box-shadow: 0 0 12px rgba(0,255,225,0.2);
     }
     .player-badge img {
-      width: 60px;
-      height: 60px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
-      margin-right: 16px;
-      border: 3px solid var(--rim-color, #00ffe1);
-    }
-    .badge-info .nickname {
-      font-size: 16px;
-      font-weight: bold;
-      color: #00ffe1;
-    }
-    .badge-info .handle {
-      font-size: 13px;
-      color: #999;
-    }
-    .badge-stats {
-      font-size: 12px;
-      color: #ccc;
-      margin-top: 4px;
-    }
-    .badge-stats span {
+      object-fit: cover;
       margin-right: 12px;
+      border: 2px solid #00ffe1;
     }
-    .modal-overlay {
+    .badge-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .badge-info .nickname { color: #00ffe1; font-weight: bold; }
+    .badge-info .handle { color: #ccc; font-size: 12px; }
+    .badge-stats { font-size: 11px; color: #aaa; margin-top: 4px; }
+
+        .balance-badges {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .modal {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0,0,0,0.8);
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 1000;
+      z-index: 9999;
     }
     .modal-content {
       background: #111;
       padding: 24px;
-      border-radius: 16px;
-      width: 95%;
-      max-width: 420px;
+      border-radius: 14px;
+      width: 90%;
+      max-width: 360px;
+      text-align: left;
       color: #fff;
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 0 18px rgba(0,255,225,0.2);
+      box-shadow: 0 0 10px #00ffe1;
     }
     .modal-content h2 {
-      font-size: 18px;
       color: #00ffe1;
       margin-bottom: 16px;
+      font-size: 18px;
     }
     .modal-content label {
-      font-size: 13px;
+      font-size: 12px;
+      margin-top: 10px;
       display: block;
-      margin-top: 12px;
-      margin-bottom: 4px;
+      color: #aaa;
     }
-    .modal-content input {
-      width: 100%;
-      padding: 8px;
-      border-radius: 8px;
-      border: 1px solid #333;
-      background: #000;
-      color: #00ffe1;
-      font-size: 13px;
-    }
+    .modal-content input[type="text"],
     .modal-content input[type="color"] {
-      padding: 4px;
-      height: 42px;
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      background: #000;
+      border: 1px solid #444;
+      color: #00ffe1;
+      margin-top: 4px;
     }
-    .modal-content button {
-      margin-top: 18px;
-      padding: 10px 16px;
+    .modal-actions {
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .modal-actions button {
+      padding: 10px 20px;
       border-radius: 10px;
       font-weight: bold;
       border: none;
       cursor: pointer;
     }
-    .save-btn {
+    .modal-actions .save {
       background: #00ffe1;
       color: #000;
-      margin-right: 8px;
     }
-    .close-btn {
-      background: #222;
-      color: #ccc;
+    .modal-actions .cancel {
+      background: #333;
+      color: #fff;
     }
   </style>
 </head>
 <body>
-<div class="player-badge" id="playerBadge">
-  <img id="badgePFP" src="https://api.dicebear.com/6.x/pixel-art/svg?seed=anon" alt="PFP" />
-  <div class="badge-info">
-    <div class="nickname" id="badgeNickname">@anon</div>
-    <div class="handle" id="badgeHandle">@handle</div>
-    <div class="badge-stats">
-      <span id="badgeGames">Games: 0</span>
-      <span id="badgeWins">Wins: 0</span>
-      <span id="badgeY2K">Y2K: 0</span>
+  <div class="container">
+    <div class="section">
+      <div class="title">Welcome Back</div>
+      <div id="walletDisplay" class="wallet">Connecting...</div>
+      <div class="player-badge" id="playerBadge">
+        <img id="badgePFP" src="https://api.dicebear.com/6.x/pixel-art/svg?seed=anon" alt="PFP" />
+        <div class="badge-info">
+          <div class="nickname" id="badgeNickname">@anon</div>
+          <div class="handle" id="badgeHandle">@handle</div>
+          <div class="badge-stats">
+            <span id="badgeGames">Games: 0</span>
+            <span id="badgeWins">Wins: 0</span>
+            <span id="badgeY2K">Y2K: 0</span>
+          </div>
+        </div>
+      </div>
+      <div class="balance-badges">
+        <div id="y2kBalance" class="badge">Y2K: 0</div>
+        <div id="croBalance" class="badge">CRO: 0</div>
+      </div>
     </div>
-  </div>
-</div>
 
-<div class="modal-overlay" id="editModal">
-  <div class="modal-content">
-    <h2>Edit Player Badge</h2>
-    <label for="editNickname">Nickname</label>
-    <input type="text" id="editNickname" />
-    <label for="editHandle">𝕏 Handle</label>
-    <input type="text" id="editHandle" />
-    <label for="editColor">Badge Rim Color</label>
-    <input type="color" id="editColor" />
-    <button class="save-btn" id="saveBadgeBtn">Save</button>
-    <button class="close-btn" onclick="document.getElementById('editModal').style.display='none'">Cancel</button>
-  </div>
-</div>
+        <div class="section">
+      <div class="title">Latest Announcement</div>
+      <div id="latestAnnouncement">Loading...</div>
+    </div>
 
-  <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-import {
-  getFirestore, doc, getDoc, setDoc
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    <div class="section">
+      <div class="title">MVP Spotlight</div>
+      <div id="mvpUser">@unknown</div>
+      <div class="wallet" id="mvpEarnings">0 Y2K Earned</div>
+    </div>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCJwqDFZtf1PkZwAalOaf2_7eWtej5HIfA",
-  authDomain: "y2k-arcade.firebaseapp.com",
-  projectId: "y2k-arcade",
-  storageBucket: "y2k-arcade.appspot.com",
-  messagingSenderId: "1063043176357",
-  appId: "1:1063043176357:web:20bc22e9cbf269ff40fa4c"
-};
+    <div class="section">
+      <div class="title">New Players (Last 48h)</div>
+      <div id="newPlayers">Loading...</div>
+    </div>
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+    <div class="modal" id="badgeModal">
+      <div class="modal-content">
+        <h2>Edit Player Badge</h2>
+        <label for="editNickname">Nickname</label>
+        <input type="text" id="editNickname" placeholder="Enter nickname" />
+        <label for="editHandle">𝕏 Handle</label>
+        <input type="text" id="editHandle" placeholder="@handle" />
+        <label for="editRimColor">Badge Rim Color</label>
+        <input type="color" id="editRimColor" value="#00ffe1" />
+        <div class="modal-actions">
+          <button class="save" id="saveBadgeBtn">Save</button>
+          <button class="cancel" onclick="closeModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
 
-let currentWallet = "";
-let profileData = {};
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+      import {
+        getFirestore, doc, getDoc, setDoc, collection, getDocs, query,
+        orderBy, limit, where, serverTimestamp
+      } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-async function loadPlayerBadge() {
-  if (!window.ethereum) return alert("Install MetaMask");
+      const firebaseConfig = {
+        apiKey: "AIzaSyCJwqDFZtf1PkZwAalOaf2_7eWtej5HIfA",
+        authDomain: "y2k-arcade.firebaseapp.com",
+        projectId: "y2k-arcade",
+        storageBucket: "y2k-arcade.appspot.com",
+        messagingSenderId: "1063043176357",
+        appId: "1:1063043176357:web:20bc22e9cbf269ff40fa4c"
+      };
 
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  await provider.send("eth_requestAccounts", []);
-  const signer = provider.getSigner();
-  const address = await signer.getAddress();
-  currentWallet = address.toLowerCase();
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
 
-  const ref = doc(db, "users", currentWallet);
-  const snap = await getDoc(ref);
+      let currentWallet = "";
 
-  if (!snap.exists()) return;
+            async function connectWalletAndLoad() {
+        if (!window.ethereum) {
+          alert("Please install MetaMask");
+          return;
+        }
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        await provider.send("eth_requestAccounts", []);
+        const signer = provider.getSigner();
+        currentWallet = (await signer.getAddress()).toLowerCase();
 
-  profileData = snap.data();
+        const short = `${currentWallet.slice(0, 6)}...${currentWallet.slice(-4)}`;
+        document.getElementById("walletDisplay").textContent = "Welcome back: " + short;
 
-  const { username, xHandle, pfpUrl, earnings = 0, games = 0, wins = 0, rimColor = "#00ffe1" } = profileData;
+        const userSnap = await getDoc(doc(db, "users", currentWallet));
+        if (userSnap.exists()) {
+          const data = userSnap.data();
+          document.getElementById("badgePFP").src = data.pfpUrl || `https://api.dicebear.com/6.x/pixel-art/svg?seed=anon`;
+          document.getElementById("badgeNickname").textContent = "@" + (data.username || "anon");
+          document.getElementById("badgeHandle").textContent = data.xHandle || "";
+          document.getElementById("badgeY2K").textContent = `Y2K: ${data.earnings || 0}`;
+          document.getElementById("badgeGames").textContent = `Games: ${data.games || 0}`;
+          document.getElementById("badgeWins").textContent = `Wins: ${data.wins || 0}`;
+          if (data.badgeColor) {
+            document.getElementById("playerBadge").style.borderColor = data.badgeColor;
+            document.getElementById("editRimColor").value = data.badgeColor;
+          }
+          document.getElementById("editNickname").value = data.username || "";
+          document.getElementById("editHandle").value = data.xHandle || "";
+        }
+      }
 
-  document.getElementById("badgeNickname").textContent = `@${username || "anon"}`;
-  document.getElementById("badgeHandle").textContent = xHandle ? `@${xHandle}` : "";
-  document.getElementById("badgePFP").src = pfpUrl || "https://api.dicebear.com/6.x/pixel-art/svg?seed=anon";
-  document.getElementById("badgeGames").textContent = `Games: ${games}`;
-  document.getElementById("badgeWins").textContent = `Wins: ${wins}`;
-  document.getElementById("badgeY2K").textContent = `Y2K: ${earnings}`;
-  document.documentElement.style.setProperty('--rim-color', rimColor || "#00ffe1");
-}
+      async function loadMVP() {
+        const topSnap = await getDocs(query(collection(db, "users"), orderBy("earnings", "desc"), limit(1)));
+        if (!topSnap.empty) {
+          const top = topSnap.docs[0].data();
+          document.getElementById("mvpUser").textContent = "@" + (top.username || "anon");
+          document.getElementById("mvpEarnings").textContent = `${top.earnings || 0} Y2K Earned`;
+        }
+      }
 
-// Show modal and preload
-document.getElementById("playerBadge").addEventListener("click", () => {
-  document.getElementById("editNickname").value = profileData.username || "";
-  document.getElementById("editHandle").value = profileData.xHandle || "";
-  document.getElementById("editColor").value = profileData.rimColor || "#00ffe1";
-  document.getElementById("editModal").style.display = "flex";
-});
-</script>
+      async function loadNewPlayers() {
+        const cutoff = Date.now() - (48 * 60 * 60 * 1000);
+        const q = query(collection(db, "users"), where("createdAt", ">", cutoff));
+        const snap = await getDocs(q);
+        const box = document.getElementById("newPlayers");
+        box.innerHTML = snap.empty ? "No new users yet." : "";
+        snap.forEach(doc => {
+          const u = doc.data();
+          const tag = document.createElement("div");
+          tag.className = "badge";
+          tag.textContent = "@" + (u.username || "anon");
+          box.appendChild(tag);
+        });
+      }
 
-  <script type="module">
-  import { setDoc, doc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+      document.getElementById("saveBadgeBtn").onclick = async () => {
+        const nickname = document.getElementById("editNickname").value.trim();
+        const handle = document.getElementById("editHandle").value.trim();
+        const rimColor = document.getElementById("editRimColor").value;
 
-  const db = getFirestore();
+        await setDoc(doc(db, "users", currentWallet), {
+          username: nickname,
+          xHandle: handle,
+          badgeColor: rimColor
+        }, { merge: true });
 
-  document.getElementById("saveChangesBtn").addEventListener("click", async () => {
-    const newNickname = document.getElementById("editNickname").value.trim();
-    const newHandle = document.getElementById("editHandle").value.trim();
-    const newColor = document.getElementById("editColor").value;
+        document.getElementById("badgeNickname").textContent = "@" + nickname;
+        document.getElementById("badgeHandle").textContent = handle;
+        document.getElementById("playerBadge").style.borderColor = rimColor;
 
-    if (!currentWallet || !newNickname || !newColor) return alert("Nickname and color required.");
+        closeModal();
+      };
 
-    const update = {
-      username: newNickname,
-      xHandle: newHandle,
-      rimColor: newColor
-    };
+      function closeModal() {
+        document.getElementById("badgeModal").style.display = "none";
+      }
 
-    await setDoc(doc(db, "users", currentWallet), update, { merge: true });
+      document.getElementById("playerBadge").addEventListener("click", () => {
+        document.getElementById("badgeModal").style.display = "flex";
+      });
 
-    document.getElementById("editModal").style.display = "none";
-    location.reload();
-  });
-
-  document.getElementById("cancelEditBtn").addEventListener("click", () => {
-    document.getElementById("editModal").style.display = "none";
-  });
-
-  // Auto load badge on page load
-  loadPlayerBadge();
-</script>
-
-</body>
+      connectWalletAndLoad();
+      loadMVP();
+      loadNewPlayers();
+    </script>
+  </body>
 </html>
