@@ -87,9 +87,7 @@
       font-size: 13px;
       cursor: pointer;
     }
-    .share-btn:hover {
-      background: #181818;
-    }
+    .share-btn:hover { background: #181818; }
     .chat-box {
       max-height: 300px;
       overflow-y: auto;
@@ -163,14 +161,14 @@
       </div>
     </div>
 
-    <div class="section">
+        <div class="section">
       <div class="title">Partner Projects</div>
       <div class="carousel" id="partnerCarousel"></div>
     </div>
 
     <div class="section">
       <div class="title">Share Your Profile</div>
-      <button class="share-btn" onclick="shareToX()">Post to 𝕏</button>
+      <button class="share-btn" id="shareBtn">Post to 𝕏</button>
     </div>
   </div>
 
@@ -195,16 +193,10 @@
     let currentWallet = "";
 
     async function connectWalletAndLoadData() {
-      if (!window.ethereum) {
-        alert("Please install MetaMask");
-        return;
-      }
-
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       await provider.send("eth_requestAccounts", []);
       const signer = provider.getSigner();
-      const address = await signer.getAddress();
-      currentWallet = address.toLowerCase();
+      currentWallet = (await signer.getAddress()).toLowerCase();
 
       document.getElementById("walletDisplay").textContent =
         currentWallet.slice(0, 6) + "..." + currentWallet.slice(-4);
@@ -230,9 +222,7 @@
     }
 
     async function loadNewPlayers() {
-      const now = Date.now();
-      const cutoff = now - 48 * 60 * 60 * 1000;
-
+      const cutoff = Date.now() - (48 * 60 * 60 * 1000); // 48 hours
       const q = query(collection(db, "users"), where("createdAt", ">", cutoff));
       const snap = await getDocs(q);
       const container = document.getElementById("newPlayers");
@@ -240,7 +230,6 @@
         container.textContent = "No new users yet.";
         return;
       }
-
       container.innerHTML = "";
       snap.forEach(doc => {
         const data = doc.data();
@@ -253,9 +242,8 @@
       const partners = [
         { name: "DOJO", logo: "https://i.imgur.com/CUZcb5O.png", link: "https://twitter.com/CRODOJO" },
         { name: "CroFighter", logo: "https://i.imgur.com/7gNV9od.png", link: "https://twitter.com/crofighter" },
-        { name: "Cards of Cronos", logo: "https://i.imgur.com/o1bHvXN.png", link: "https://twitter.com/CardsofCronos" },
+        { name: "Cards of Cronos", logo: "https://i.imgur.com/o1bHvXN.png", link: "https://twitter.com/CardsofCronos" }
       ];
-
       const container = document.getElementById("partnerCarousel");
       partners.forEach(partner => {
         const el = document.createElement("div");
@@ -264,8 +252,7 @@
           <a href="${partner.link}" target="_blank">
             <img src="${partner.logo}" alt="${partner.name}" />
             <p>${partner.name}</p>
-          </a>
-        `;
+          </a>`;
         container.appendChild(el);
       });
     }
@@ -274,14 +261,12 @@
       const input = document.getElementById("chatInput");
       const text = input.value.trim();
       if (!text || !currentWallet) return;
-
       await addDoc(collection(db, "chat"), {
         text,
         createdAt: serverTimestamp(),
         uid: currentWallet,
         username: currentWallet.slice(2, 6)
       });
-
       input.value = "";
     }
 
@@ -310,12 +295,13 @@
         "Stacking wins and spotlight. Welcome to the Vault. #CROFAM #Puushfuncronos",
         "The vault ain't just for coins — it's for history. #CROFAM #Puushfuncronos"
       ];
-
       const msg = encodeURIComponent(messages[Math.floor(Math.random() * messages.length)]);
       const url = encodeURIComponent("https://quantum-vault-y2kxroast.netlify.app/");
       window.open(`https://twitter.com/intent/tweet?text=${msg}&url=${url}`, "_blank");
     }
 
+    window.sendMessage = sendMessage;
+    document.getElementById("shareBtn").addEventListener("click", shareToX);
     connectWalletAndLoadData();
     loadMVP();
     loadNewPlayers();
