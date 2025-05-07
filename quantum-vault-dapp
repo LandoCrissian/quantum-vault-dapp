@@ -1,0 +1,11 @@
+quantum-vault-dapp/
+├── index.html
+├── vault.html
+├── styles/
+│   └── style.css
+├── scripts/
+│   └── app.js
+├── images/
+│   └── (your image assets)
+├── README.md
+└── .gitignore
