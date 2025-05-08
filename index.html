@@ -492,6 +492,18 @@ loadMVP();
 loadNewPlayers();
 loadActivityFeed();
 
+      async function loadAnnouncement() {
+  const snap = await getDoc(doc(db, "vault_config", "latest"));
+  if (snap.exists()) {
+    const data = snap.data();
+    if (data.announcement) {
+      document.getElementById("latestAnnouncement").textContent = data.announcement;
+    }
+  }
+}
+loadAnnouncement();
+checkAdminAccess();
+
       function shareBadge() {
   const nickname = document.getElementById("badgeNickname").textContent.replace(/^@/, "") || "anon";
   const earnings = document.getElementById("badgeY2K").textContent.replace("Y2K: ", "") || "0";
