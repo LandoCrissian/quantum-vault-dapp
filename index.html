@@ -164,6 +164,7 @@
           </div>
         </div>
       </div>
+      
       <div class="balance-badges">
         <div id="y2kBalance" class="badge">Y2K: 0</div>
         <div id="croBalance" class="badge">CRO: 0</div>
@@ -174,7 +175,7 @@
   <button onclick="shareBadge()" style="padding:8px 16px; background:#00ffe1; color:#000; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
     Share Your Badge
   </button>
-</div> 
+</div>
 
     <div class="section">
       <div class="title">Latest Announcement</div>
@@ -380,12 +381,35 @@ loadNewPlayers();
 
       function shareBadge() {
   const nickname = document.getElementById("badgeNickname").textContent.replace(/^@/, "") || "anon";
-  const shareText = encodeURIComponent(`Check out my badge in the Quantum Vault! Built on #CROFAM. Powered by $Y2K.
+  const url = "https://quantum-vault-y2kxroast.netlify.app";
+  const tags = "#CROFAM #Y2K #QuantumVault";
 
-@${nickname} just leveled up.
-→ quantum-vault-y2kxroast.netlify.app`);
+  const postTemplates = [
+    "I just unlocked my badge in the Quantum Vault. This isn’t just a flex — it’s an invite. Let’s build.",
+    "You’re early. I’m earlier. Badge claimed. Quantum Vault open.",
+    "Y2K energy only. Tap in, get your badge, and enter the Quantum Vault.",
+    "I didn’t just join, I activated. My badge is live. Yours?",
+    "This isn’t Web3. This is Quantum. Badge secured. Vault entered.",
+    "Verified, styled, and sealed. Grab your badge and join the Vault.",
+    "No roadmap needed. Just vibes, a badge, and a whole lotta $Y2K.",
+    "Your wallet says you belong. Your badge proves it. Join the Quantum Vault.",
+    "Not a member yet? Profile, badge, done. See you inside.",
+    "I’m not in the vault for the money. I’m in it for the moment. Badge linked.",
+    "The vault doesn’t open for everyone. Get your profile right.",
+    "Cosmic badge, cold profile. I’m all in.",
+    "Flexing my badge with pride. Quantum Vault style.",
+    "They said be early. I minted a whole identity.",
+    "Your name, your badge, your timeline. It starts now.",
+    "This ain’t no JPEG. It’s the badge that gets you in.",
+    "Y2K isn’t just a token — it’s a vibe. My badge is proof.",
+    "If you’re reading this, your wallet’s already late. Get the badge.",
+    "I clicked. I claimed. I’m inside.",
+    "Join the ones building the next era of digital identity."
+  ];
 
-  const shareUrl = `https://twitter.com/intent/tweet?text=${shareText}`;
+  const randomText = postTemplates[Math.floor(Math.random() * postTemplates.length)];
+  const fullTweet = encodeURIComponent(`${randomText}\n\n@${nickname} → ${url}\n${tags}`);
+  const shareUrl = `https://twitter.com/intent/tweet?text=${fullTweet}`;
   window.open(shareUrl, '_blank');
 }
       
