@@ -349,17 +349,28 @@ document.getElementById("saveBadgeBtn").addEventListener("click", async () => {
   const handle = document.getElementById("editHandle").value.trim();
   const rimColor = document.getElementById("editRimColor").value;
 
-  await setDoc(doc(db, "users", currentWallet), {
-    username: nickname,
-    xHandle: handle,
-    badgeColor: rimColor
-  }, { merge: true });
+  if (!currentWallet) {
+    alert("Wallet not connected.");
+    return;
+  }
 
-  document.getElementById("badgeNickname").textContent = nickname;
-  document.getElementById("badgeHandle").textContent = handle ? `𝕏: @${handle}` : "𝕏: N/A";
-  document.getElementById("playerBadge").style.borderColor = rimColor;
-  document.getElementById("badgePFP").style.borderColor = rimColor;
-  document.getElementById("badgeModal").style.display = "none";
+  try {
+    await setDoc(doc(db, "users", currentWallet), {
+      username: nickname,
+      xHandle: handle,
+      badgeColor: rimColor
+    }, { merge: true });
+
+    // Update UI
+    document.getElementById("badgeNickname").textContent = nickname;
+    document.getElementById("badgeHandle").textContent = handle ? `𝕏: @${handle}` : "𝕏: N/A";
+    document.getElementById("playerBadge").style.borderColor = rimColor;
+    document.getElementById("badgePFP").style.borderColor = rimColor;
+    document.getElementById("badgeModal").style.display = "none";
+  } catch (err) {
+    console.error("Error saving badge:", err);
+    alert("Failed to save. Try again.");
+  }
 });
 
 // CHAT: Real-time listener
