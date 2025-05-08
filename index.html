@@ -162,23 +162,24 @@
       <div class="title">Welcome Back</div>
       <div id="walletDisplay" class="wallet">Connecting...</div>
       <div class="player-badge" id="playerBadge">
-        <img id="badgePFP" src="https://api.dicebear.com/6.x/pixel-art/svg?seed=anon" alt="PFP" />
-        <div class="badge-info">
-          <!-- Share Badge Icon in Badge -->
-        <div onclick="shareBadge()" title="Share on 𝕏" style="margin-left:auto;">
-         <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg" style="cursor:pointer;">
-         <path d="M19.633 7.997c.013.18.013.361.013.542 0 5.524-4.205 11.894-11.893 11.894-2.365 0-4.567-.692-6.414-1.876.33.038.648.051.991.051a8.412 8.412 0 005.215-1.798 4.194 4.194 0 01-3.917-2.91c.256.038.499.063.768.063.368 0 .736-.051 1.08-.14a4.186 4.186 0 01-3.361-4.105v-.051a4.21 4.21 0 001.894.53 4.197 4.197 0 01-1.873-3.491c0-.768.204-1.473.56-2.086a11.897 11.897 0 008.627 4.37 4.719 4.719 0 01-.102-.961 4.194 4.194 0 017.257-2.868 8.286 8.286 0 002.668-1.02 4.196 4.196 0 01-1.84 2.314 8.373 8.373 0 002.404-.648 8.837 8.837 0 01-2.092 2.153z"/>
-        </svg>
-        </div>
-          <div class="nickname" id="badgeNickname">anon</div>
-          <div class="handle" id="badgeHandle">𝕏: @handle</div>
-          <div class="badge-stats">
-            <span id="badgeGames">Games: 0</span>
-            <span id="badgeWins">Wins: 0</span>
-            <span id="badgeY2K">Y2K: 0</span>
-          </div>
-        </div>
-      </div>
+  <!-- White 𝕏 icon top right -->
+  <div onclick="shareBadge()" title="Share on 𝕏" style="position:absolute; top:10px; right:10px;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg" style="cursor:pointer;">
+      <path d="M19.633 7.997c.013.18.013.361.013.542 0 5.524-4.205 11.894-11.893 11.894-2.365 0-4.567-.692-6.414-1.876.33.038.648.051.991.051a8.412 8.412 0 005.215-1.798 4.194 4.194 0 01-3.917-2.91c.256.038.499.063.768.063.368 0 .736-.051 1.08-.14a4.186 4.186 0 01-3.361-4.105v-.051a4.21 4.21 0 001.894.53 4.197 4.197 0 01-1.873-3.491c0-.768.204-1.473.56-2.086a11.897 11.897 0 008.627 4.37 4.719 4.719 0 01-.102-.961 4.194 4.194 0 017.257-2.868 8.286 8.286 0 002.668-1.02 4.196 4.196 0 01-1.84 2.314 8.373 8.373 0 002.404-.648 8.837 8.837 0 01-2.092 2.153z"/>
+    </svg>
+  </div>
+
+  <img id="badgePFP" src="https://api.dicebear.com/6.x/pixel-art/svg?seed=anon" alt="PFP" />
+  <div class="badge-info">
+    <div class="nickname" id="badgeNickname">anon</div>
+    <div class="handle" id="badgeHandle">𝕏: @handle</div>
+    <div class="badge-stats">
+      <span id="badgeGames">Games: 0</span>
+      <span id="badgeWins">Wins: 0</span>
+      <span id="badgeY2K">Y2K: 0</span>
+    </div>
+  </div>
+</div>
       
       <div class="balance-badges">
         <div id="y2kBalance" class="badge">Y2K: 0</div>
