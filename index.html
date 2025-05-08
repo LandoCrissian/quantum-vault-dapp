@@ -447,6 +447,7 @@ document.getElementById("sendMsgBtn").addEventListener("click", async () => {
 connectWalletAndLoad();
 loadMVP();
 loadNewPlayers();
+loadActivityFeed();
 
       function shareBadge() {
   const nickname = document.getElementById("badgeNickname").textContent.replace(/^@/, "") || "anon";
