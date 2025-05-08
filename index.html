@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quantum Vault – Home</title>
+  <meta name="theme-color" content="#00ffe1">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
   <style>
@@ -162,6 +163,17 @@
   font-size: 12px;
   color: #aaa;
 } 
+   input[type="text"] {
+  font-size: 16px; /* prevents iOS zoom */
+} 
+    .container {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  height: 100vh;
+}
+.section {
+  scroll-snap-align: start;
+}
   </style>
 </head>
 <body>
