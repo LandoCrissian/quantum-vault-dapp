@@ -154,6 +154,14 @@
   top: 10px;
   right: 10px;
 }
+   #activityFeed .wallet {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: #aaa;
+} 
   </style>
 </head>
 <body>
@@ -351,7 +359,11 @@ async function loadNewPlayers() {
 
   onSnapshot(q, (snap) => {
     const feed = document.getElementById("activityFeed");
-    feed.innerHTML = snap.empty ? "No recent activity." : "";
+    if (snap.docs.length === 0) {
+  feed.innerHTML = "No recent activity.";
+} else {
+  feed.innerHTML = "";
+}
 
     snap.forEach(doc => {
       const d = doc.data();
