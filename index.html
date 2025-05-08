@@ -170,13 +170,13 @@
         <div id="croBalance" class="badge">CRO: 0</div>
       </div>
     </div>
-
-    <div style="text-align: center; margin-top: 10px;">
-  <button onclick="shareBadge()" style="padding:8px 16px; background:#00ffe1; color:#000; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
+    <div style="text-align: center; margin-top: 14px;">
+  <button onclick="shareBadge()" style="padding:8px 18px; background:#00ffe1; color:#000; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
     Share Your Badge
   </button>
 </div>
 
+    
     <div class="section">
       <div class="title">Latest Announcement</div>
       <div id="latestAnnouncement">Loading...</div>
@@ -382,38 +382,38 @@ loadNewPlayers();
       function shareBadge() {
   const nickname = document.getElementById("badgeNickname").textContent.replace(/^@/, "") || "anon";
   const url = "https://quantum-vault-y2kxroast.netlify.app";
-  const tags = "#CROFAM #Y2K #QuantumVault";
+  const tags = "#CROFAM #puushfuncronos #Y2KCoin #Y2KxROAST";
 
   const postTemplates = [
-    "I just unlocked my badge in the Quantum Vault. This isn’t just a flex — it’s an invite. Let’s build.",
-    "You’re early. I’m earlier. Badge claimed. Quantum Vault open.",
-    "Y2K energy only. Tap in, get your badge, and enter the Quantum Vault.",
-    "I didn’t just join, I activated. My badge is live. Yours?",
-    "This isn’t Web3. This is Quantum. Badge secured. Vault entered.",
-    "Verified, styled, and sealed. Grab your badge and join the Vault.",
-    "No roadmap needed. Just vibes, a badge, and a whole lotta $Y2K.",
-    "Your wallet says you belong. Your badge proves it. Join the Quantum Vault.",
-    "Not a member yet? Profile, badge, done. See you inside.",
-    "I’m not in the vault for the money. I’m in it for the moment. Badge linked.",
-    "The vault doesn’t open for everyone. Get your profile right.",
-    "Cosmic badge, cold profile. I’m all in.",
-    "Flexing my badge with pride. Quantum Vault style.",
-    "They said be early. I minted a whole identity.",
-    "Your name, your badge, your timeline. It starts now.",
-    "This ain’t no JPEG. It’s the badge that gets you in.",
-    "Y2K isn’t just a token — it’s a vibe. My badge is proof.",
-    "If you’re reading this, your wallet’s already late. Get the badge.",
-    "I clicked. I claimed. I’m inside.",
-    "Join the ones building the next era of digital identity."
+    "Badge locked. Style upgraded. I'm live in the Quantum Vault.",
+    "Quantum identity secured. Let the $Y2K era begin.",
+    "I minted my moment in the Vault. Badge on. Let’s build.",
+    "Y2K Coin holders know. The Vault is where identity begins.",
+    "Claim your space, mint your name. Quantum Vault open.",
+    "No fluff. Just badges, momentum, and a cosmic grind.",
+    "You ever felt early *and* stylish? I did. Quantum Vault badge minted.",
+    "This isn’t alpha. It’s access. Badge in. Vault open.",
+    "Badge flexed. Vibes locked. #QuantumVault.",
+    "The digital future isn’t coming. It’s minted — in the Vault.",
+    "I’m part of the early chaos. The organized madness. The Quantum Vault.",
+    "Y2K Coin gave us a key. The Vault gave us identity.",
+    "This ain’t no JPEG. It’s your entrance pass.",
+    "If you know, you badge up. That’s it.",
+    "Your wallet belongs here. Your badge proves it.",
+    "It’s a vibe. It’s an identity. It’s live.",
+    "Vault’s open. Earned my digital stripe.",
+    "The badge is just the beginning. #CROFAM knows.",
+    "I didn’t wait for the hype. I *became* it.",
+    "I minted history. Now it’s your turn."
   ];
 
   const randomText = postTemplates[Math.floor(Math.random() * postTemplates.length)];
-  const fullTweet = encodeURIComponent(`${randomText}\n\n@${nickname} → ${url}\n${tags}`);
+  const fullTweet = encodeURIComponent(`${randomText}\n\n→ ${url}\n${tags}`);
   const shareUrl = `https://twitter.com/intent/tweet?text=${fullTweet}`;
   window.open(shareUrl, '_blank');
-  window.shareBadge = shareBadge;
-  
 }
+
+window.shareBadge = shareBadge;
       
 </script>
 </body>
