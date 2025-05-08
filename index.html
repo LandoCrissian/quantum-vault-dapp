@@ -275,7 +275,7 @@ async function connectWalletAndLoad() {
     document.getElementById("badgeWins").textContent = `Wins: ${data.wins || 0}`;
 
     if (data.badgeColor) {
-      document.getElementById("playerBadge").style.borderColor = data.badgeColor;
+      document.getElementById("playerBadge").style.borderColor = rimColor;
       document.getElementById("editRimColor").value = data.badgeColor;
     }
 
