@@ -411,6 +411,8 @@ loadNewPlayers();
   const fullTweet = encodeURIComponent(`${randomText}\n\n@${nickname} → ${url}\n${tags}`);
   const shareUrl = `https://twitter.com/intent/tweet?text=${fullTweet}`;
   window.open(shareUrl, '_blank');
+  window.shareBadge = shareBadge;
+  
 }
       
 </script>
