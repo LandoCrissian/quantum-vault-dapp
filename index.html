@@ -251,6 +251,12 @@ const db = getFirestore(app);
 let currentWallet = "";
 
 async function connectWalletAndLoad() {
+  // LIVE preview of rim color while editing
+document.getElementById("editRimColor").addEventListener("input", () => {
+  const color = document.getElementById("editRimColor").value;
+  document.getElementById("playerBadge").style.borderColor = color;
+  document.getElementById("badgePFP").style.borderColor = color;
+});
   if (!window.ethereum) {
     alert("Please install MetaMask");
     return;
@@ -352,6 +358,7 @@ document.getElementById("saveBadgeBtn").addEventListener("click", async () => {
   document.getElementById("badgeNickname").textContent = nickname;
   document.getElementById("badgeHandle").textContent = handle ? `𝕏: @${handle}` : "𝕏: N/A";
   document.getElementById("playerBadge").style.borderColor = rimColor;
+  document.getElementById("badgePFP").style.borderColor = rimColor;
   document.getElementById("badgeModal").style.display = "none";
 });
 
