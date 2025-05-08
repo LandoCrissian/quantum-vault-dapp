@@ -350,24 +350,19 @@ async function loadNewPlayers() {
 }
 
       async function loadActivityFeed() {
-  const cutoff = Date.now() - (48 * 60 * 60 * 1000); // 48 hours
+  const feed = document.getElementById("activityFeed");
   const q = query(
-    collection(db, "users"),
-    where("lastUpdated", ">", cutoff),
-    orderBy("lastUpdated", "desc")
+    collection(db, "activity_log"),
+    orderBy("timestamp", "desc"),
+    limit(8)
   );
 
   onSnapshot(q, (snap) => {
-    const feed = document.getElementById("activityFeed");
-    if (snap.docs.length === 0) {
-  feed.innerHTML = "No recent activity.";
-} else {
-  feed.innerHTML = "";
-}
+    feed.innerHTML = snap.empty ? "No recent activity." : "";
 
     snap.forEach(doc => {
       const d = doc.data();
-      const time = new Date(d.lastUpdated).toLocaleTimeString([], {
+      const time = new Date(d.timestamp).toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit"
       });
@@ -400,6 +395,13 @@ document.getElementById("saveBadgeBtn").addEventListener("click", async () => {
   badgeColor: rimColor,
   lastUpdated: Date.now()
 }, { merge: true });
+
+// Log the update in activity_log
+await addDoc(collection(db, "activity_log"), {
+  user: currentWallet,
+  username: nickname || "anon",
+  timestamp: Date.now()
+});
 
     // Update UI
     document.getElementById("badgeNickname").textContent = nickname;
