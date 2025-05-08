@@ -166,82 +166,86 @@
 </head>
 <body>
   <div class="container">
+    <!-- Welcome Section + Badge -->
     <div class="section">
       <div class="title">Welcome Back</div>
       <div id="walletDisplay" class="wallet">Connecting...</div>
       <div class="player-badge" id="playerBadge">
-  <!-- White 𝕏 icon top right -->
-  <div onclick="shareBadge()" title="Share on 𝕏" style="position:absolute; top:10px; right:10px;">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg" style="cursor:pointer;">
-      <path d="M19.633 7.997c.013.18.013.361.013.542 0 5.524-4.205 11.894-11.893 11.894-2.365 0-4.567-.692-6.414-1.876.33.038.648.051.991.051a8.412 8.412 0 005.215-1.798 4.194 4.194 0 01-3.917-2.91c.256.038.499.063.768.063.368 0 .736-.051 1.08-.14a4.186 4.186 0 01-3.361-4.105v-.051a4.21 4.21 0 001.894.53 4.197 4.197 0 01-1.873-3.491c0-.768.204-1.473.56-2.086a11.897 11.897 0 008.627 4.37 4.719 4.719 0 01-.102-.961 4.194 4.194 0 017.257-2.868 8.286 8.286 0 002.668-1.02 4.196 4.196 0 01-1.84 2.314 8.373 8.373 0 002.404-.648 8.837 8.837 0 01-2.092 2.153z"/>
-    </svg>
-  </div>
-
-  <img id="badgePFP" src="https://api.dicebear.com/6.x/pixel-art/svg?seed=anon" alt="PFP" />
-  <div class="badge-info">
-    <div class="nickname" id="badgeNickname">anon</div>
-    <div class="handle" id="badgeHandle">𝕏: @handle</div>
-    <div class="badge-stats">
-      <span id="badgeGames">Games: 0</span>
-      <span id="badgeWins">Wins: 0</span>
-      <span id="badgeY2K">Y2K: 0</span>
-    </div>
-  </div>
-</div>
-      
+        <div onclick="shareBadge()" title="Share on 𝕏" style="position:absolute; top:10px; right:10px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg" style="cursor:pointer;">
+            <path d="M19.633 7.997c.013.18.013.361.013.542 0 5.524-4.205 11.894-11.893 11.894-2.365 0-4.567-.692-6.414-1.876.33.038.648.051.991.051a8.412 8.412 0 005.215-1.798 4.194 4.194 0 01-3.917-2.91c.256.038.499.063.768.063.368 0 .736-.051 1.08-.14a4.186 4.186 0 01-3.361-4.105v-.051a4.21 4.21 0 001.894.53 4.197 4.197 0 01-1.873-3.491c0-.768.204-1.473.56-2.086a11.897 11.897 0 008.627 4.37 4.719 4.719 0 01-.102-.961 4.194 4.194 0 017.257-2.868 8.286 8.286 0 002.668-1.02 4.196 4.196 0 01-1.84 2.314 8.373 8.373 0 002.404-.648 8.837 8.837 0 01-2.092 2.153z"/>
+          </svg>
+        </div>
+        <img id="badgePFP" src="https://api.dicebear.com/6.x/pixel-art/svg?seed=anon" alt="PFP" />
+        <div class="badge-info">
+          <div class="nickname" id="badgeNickname">anon</div>
+          <div class="handle" id="badgeHandle">𝕏: @handle</div>
+          <div class="badge-stats">
+            <span id="badgeGames">Games: 0</span>
+            <span id="badgeWins">Wins: 0</span>
+            <span id="badgeY2K">Y2K: 0</span>
+          </div>
+        </div>
+      </div>
       <div class="balance-badges">
         <div id="y2kBalance" class="badge">Y2K: 0</div>
         <div id="croBalance" class="badge">CRO: 0</div>
       </div>
     </div>
-    
+
+    <!-- Vault Chat Room (moved up for UX) -->
     <div class="section">
-      <div class="title">Latest Announcement</div>
-      <div id="latestAnnouncement">Loading...</div>
+      <div class="title">Vault Chat Room</div>
+      <div id="chatBox" style="max-height: 220px; overflow-y: auto; font-size: 13px; background:#111; padding:12px; border-radius:10px; margin-bottom:12px;"></div>
+      <div style="display:flex; gap:8px;">
+        <input type="text" id="chatInput" placeholder="Type your message..." style="flex:1; padding:10px; border-radius:8px; border:1px solid #444; background:#000; color:#00ffe1;">
+        <button id="sendMsgBtn" style="padding:10px 16px; border:none; border-radius:8px; background:#00ffe1; color:#000; font-weight:bold;">Send</button>
+      </div>
     </div>
 
+    <!-- Vault Activity Feed -->
+    <div class="section">
+      <div class="title">Vault Activity Feed</div>
+      <div id="activityFeed">Loading activity...</div>
+    </div>
+
+    <!-- MVP Spotlight -->
     <div class="section">
       <div class="title">MVP Spotlight</div>
       <div id="mvpUser">@unknown</div>
       <div class="wallet" id="mvpEarnings">0 Y2K Earned</div>
     </div>
 
+    <!-- Latest Announcement -->
     <div class="section">
-  <div class="title">Vault Activity Feed</div>
-  <div id="activityFeed">Loading activity...</div>
-</div>
+      <div class="title">Latest Announcement</div>
+      <div id="latestAnnouncement">Loading...</div>
+    </div>
 
+    <!-- New Players -->
     <div class="section">
       <div class="title">New Players (Last 48h)</div>
       <div id="newPlayers">Loading...</div>
     </div>
-
-    <!-- Vault Chat Room -->
-<div class="section">
-  <div class="title">Vault Chat Room</div>
-  <div id="chatBox" style="max-height: 220px; overflow-y: auto; font-size: 13px; background:#111; padding:12px; border-radius:10px; margin-bottom:12px;"></div>
-  <div style="display:flex; gap:8px;">
-    <input type="text" id="chatInput" placeholder="Type your message..." style="flex:1; padding:10px; border-radius:8px; border:1px solid #444; background:#000; color:#00ffe1;">
-    <button id="sendMsgBtn" style="padding:10px 16px; border:none; border-radius:8px; background:#00ffe1; color:#000; font-weight:bold;">Send</button>
   </div>
-</div>
-    
 
-    <div class="modal" id="badgeModal">
-      <div class="modal-content">
-        <h2>Edit Player Badge</h2>
-        <label for="editNickname">Nickname</label>
-        <input type="text" id="editNickname" placeholder="Enter nickname" />
-        <label for="editHandle">𝕏 Handle</label>
-        <input type="text" id="editHandle" placeholder="@handle" />
-        <label for="editRimColor">Badge Rim Color</label>
-        <input type="color" id="editRimColor" value="#00ffe1" />
-        <div class="modal-actions">
-          <button class="save" id="saveBadgeBtn">Save</button>
-          <button class="cancel" id="cancelBadgeBtn">Cancel</button>
-        </div>
+  <!-- Edit Modal -->
+  <div class="modal" id="badgeModal">
+    <div class="modal-content">
+      <h2>Edit Player Badge</h2>
+      <label for="editNickname">Nickname</label>
+      <input type="text" id="editNickname" placeholder="Enter nickname" />
+      <label for="editHandle">𝕏 Handle</label>
+      <input type="text" id="editHandle" placeholder="@handle" />
+      <label for="editRimColor">Badge Rim Color</label>
+      <input type="color" id="editRimColor" value="#00ffe1" />
+      <div class="modal-actions">
+        <button class="save" id="saveBadgeBtn">Save</button>
+        <button class="cancel" id="cancelBadgeBtn">Cancel</button>
       </div>
     </div>
+  </div>
+</body>
 
     <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
