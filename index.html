@@ -395,10 +395,11 @@ document.getElementById("saveBadgeBtn").addEventListener("click", async () => {
 
   try {
     await setDoc(doc(db, "users", currentWallet), {
-      username: nickname,
-      xHandle: handle,
-      badgeColor: rimColor
-    }, { merge: true });
+  username: nickname,
+  xHandle: handle,
+  badgeColor: rimColor,
+  lastUpdated: Date.now()
+}, { merge: true });
 
     // Update UI
     document.getElementById("badgeNickname").textContent = nickname;
