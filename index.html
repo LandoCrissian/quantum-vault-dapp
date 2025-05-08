@@ -356,11 +356,15 @@ document.getElementById("sendMsgBtn").addEventListener("click", async () => {
   const input = document.getElementById("chatInput");
   const text = input.value.trim();
   if (!text) return;
-  await addDoc(chatRef, {
-    name: document.getElementById("badgeNickname").textContent || "anon",
+
+  const name = document.getElementById("badgeNickname").textContent?.replace(/^@/, "") || "anon";
+
+  await addDoc(collection(db, "chat"), {
+    name,
     text,
     timestamp: serverTimestamp()
   });
+
   input.value = "";
 });
 
