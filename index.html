@@ -1,59 +1,105 @@
-<!-- Quantum Vault – Locked-In, Polished Homepage -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quantum Vault – Home</title>
-  <meta name="theme-color" content="#00ffe1">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Quantum Vault</title>
+  <meta name="theme-color" content="#00ffe1" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
   <style>
+    :root {
+      --bg: #000;
+      --card: rgba(255,255,255,0.03);
+      --border: rgba(255,255,255,0.08);
+      --accent: #00ffe1;
+      --text: #fff;
+      --subtext: #aaa;
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       font-family: 'Space Grotesk', sans-serif;
     }
+
     body {
-      background: #000;
-      color: #fff;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 72px;
+      background: #111;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 0;
+      gap: 18px;
+    }
+
+    .sidebar .nav-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .sidebar .nav-icon svg {
+      width: 22px;
+      height: 22px;
+      fill: #000;
+    }
+
+    /* Main layout */
+    .main {
+      flex: 1;
+      overflow-y: auto;
       padding: 16px;
     }
-    .container {
-      max-width: 600px;
-      margin: auto;
-      padding-bottom: 100px;
-    }
+
     .section {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: var(--card);
+      border: 1px solid var(--border);
       border-radius: 18px;
-      padding: 24px;
+      padding: 20px;
       margin-bottom: 20px;
       backdrop-filter: blur(14px);
     }
+
     .title {
-      font-size: 20px;
-      color: #00ffe1;
-      margin-bottom: 12px;
+      font-size: 18px;
+      color: var(--accent);
+      margin-bottom: 10px;
     }
+
     .wallet {
       font-size: 13px;
-      color: #aaa;
+      color: var(--subtext);
       margin-bottom: 8px;
       word-break: break-word;
     }
+
     .badge {
       display: inline-block;
-      background: #00ffe1;
+      background: var(--accent);
       color: #000;
       padding: 4px 10px;
       font-size: 12px;
       border-radius: 6px;
-      margin: 6px 4px;
+      margin: 4px;
       font-weight: bold;
     }
+
     .player-badge {
       display: flex;
       align-items: center;
@@ -61,9 +107,11 @@
       border-radius: 14px;
       padding: 12px;
       margin-top: 10px;
-      border: 2px solid #00ffe1;
+      border: 2px solid var(--accent);
       cursor: pointer;
+      position: relative;
     }
+
     .player-badge img {
       width: 50px;
       height: 50px;
@@ -72,122 +120,90 @@
       margin-right: 12px;
       border: 2px solid inherit;
     }
+
     .badge-info {
       display: flex;
       flex-direction: column;
     }
-    .badge-info .nickname { color: #00ffe1; font-weight: bold; }
-    .badge-info .handle { color: #ccc; font-size: 12px; }
-    .badge-stats { font-size: 11px; color: #aaa; margin-top: 4px; }
-        .balance-badges {
+
+    .nickname { color: var(--accent); font-weight: bold; }
+    .handle { color: var(--subtext); font-size: 12px; }
+    .badge-stats { font-size: 11px; color: var(--subtext); margin-top: 4px; }
+
+    .balance-badges {
       margin-top: 10px;
       display: flex;
       gap: 10px;
       justify-content: center;
       flex-wrap: wrap;
     }
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.8);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    }
-    .modal-content {
+
+    /* Chat styles */
+    #chatBox {
+      max-height: 220px;
+      overflow-y: auto;
+      font-size: 13px;
       background: #111;
-      padding: 24px;
-      border-radius: 14px;
-      width: 90%;
-      max-width: 360px;
-      text-align: left;
-      color: #fff;
-      box-shadow: 0 0 10px #00ffe1;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 12px;
     }
-    .modal-content h2 {
-      color: #00ffe1;
-      margin-bottom: 16px;
-      font-size: 18px;
-    }
-    .modal-content label {
-      font-size: 12px;
-      margin-top: 10px;
-      display: block;
-      color: #aaa;
-    }
-    .modal-content input[type="text"],
-    .modal-content input[type="color"] {
-      width: 100%;
+
+    #chatInput {
+      flex: 1;
       padding: 10px;
       border-radius: 8px;
-      background: #000;
       border: 1px solid #444;
-      color: #00ffe1;
-      margin-top: 4px;
+      background: #000;
+      color: var(--accent);
     }
-    .modal-actions {
-      margin-top: 16px;
-      display: flex;
-      justify-content: space-between;
-    }
-    .modal-actions button {
-      padding: 10px 20px;
-      border-radius: 10px;
-      font-weight: bold;
-      border: none;
-      cursor: pointer;
-    }
-    .modal-actions .save {
-      background: #00ffe1;
-      color: #000;
-    }
-    .modal-actions .cancel {
-      background: #333;
-      color: #fff;
-    }
-    .player-badge {
-  position: relative;
-}
 
-.player-badge svg {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-}
-   #activityFeed .wallet {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  padding: 8px 12px;
-  margin-bottom: 6px;
-  font-size: 12px;
-  color: #aaa;
-} 
-   input[type="text"] {
-  font-size: 16px; /* prevents iOS zoom */
-} 
-    .container {
-  scroll-snap-type: y mandatory;
-  overflow-y: scroll;
-  height: 100vh;
-}
-.section {
-  scroll-snap-align: start;
-}
+    #sendMsgBtn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #000;
+      font-weight: bold;
+      margin-left: 8px;
+    }
+
+    /* Activity feed */
+    #activityFeed .wallet {
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: var(--subtext);
+    }
+
+    /* Mobile tweaks */
+    @media (max-width: 600px) {
+      .sidebar { width: 60px; }
+      .sidebar .nav-icon { width: 38px; height: 38px; }
+      .sidebar .nav-icon svg { width: 18px; height: 18px; }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Welcome Section + Badge -->
+  <!-- Sidebar Navigation -->
+  <div class="sidebar">
+    <div class="nav-icon" title="Home">
+      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    </div>
+    <div class="nav-icon" title="Chat">
+      <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main">
+    <!-- Welcome & Badge -->
     <div class="section">
       <div class="title">Welcome Back</div>
       <div id="walletDisplay" class="wallet">Connecting...</div>
       <div class="player-badge" id="playerBadge">
-        <div onclick="shareBadge()" title="Share on 𝕏" style="position:absolute; top:10px; right:10px;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg" style="cursor:pointer;">
-            <path d="M19.633 7.997c.013.18.013.361.013.542 0 5.524-4.205 11.894-11.893 11.894-2.365 0-4.567-.692-6.414-1.876.33.038.648.051.991.051a8.412 8.412 0 005.215-1.798 4.194 4.194 0 01-3.917-2.91c.256.038.499.063.768.063.368 0 .736-.051 1.08-.14a4.186 4.186 0 01-3.361-4.105v-.051a4.21 4.21 0 001.894.53 4.197 4.197 0 01-1.873-3.491c0-.768.204-1.473.56-2.086a11.897 11.897 0 008.627 4.37 4.719 4.719 0 01-.102-.961 4.194 4.194 0 017.257-2.868 8.286 8.286 0 002.668-1.02 4.196 4.196 0 01-1.84 2.314 8.373 8.373 0 002.404-.648 8.837 8.837 0 01-2.092 2.153z"/>
-          </svg>
-        </div>
         <img id="badgePFP" src="https://api.dicebear.com/6.x/pixel-art/svg?seed=anon" alt="PFP" />
         <div class="badge-info">
           <div class="nickname" id="badgeNickname">anon</div>
@@ -205,17 +221,17 @@
       </div>
     </div>
 
-    <!-- Vault Chat Room (moved up for UX) -->
+    <!-- General Chat -->
     <div class="section">
-      <div class="title">Vault Chat Room</div>
-      <div id="chatBox" style="max-height: 220px; overflow-y: auto; font-size: 13px; background:#111; padding:12px; border-radius:10px; margin-bottom:12px;"></div>
-      <div style="display:flex; gap:8px;">
-        <input type="text" id="chatInput" placeholder="Type your message..." style="flex:1; padding:10px; border-radius:8px; border:1px solid #444; background:#000; color:#00ffe1;">
-        <button id="sendMsgBtn" style="padding:10px 16px; border:none; border-radius:8px; background:#00ffe1; color:#000; font-weight:bold;">Send</button>
+      <div class="title">#general</div>
+      <div id="chatBox">Loading chat...</div>
+      <div style="display: flex;">
+        <input type="text" id="chatInput" placeholder="Type your message..." />
+        <button id="sendMsgBtn">Send</button>
       </div>
     </div>
 
-    <!-- Vault Activity Feed -->
+    <!-- Activity Feed -->
     <div class="section">
       <div class="title">Vault Activity Feed</div>
       <div id="activityFeed">Loading activity...</div>
@@ -228,7 +244,7 @@
       <div class="wallet" id="mvpEarnings">0 Y2K Earned</div>
     </div>
 
-    <!-- Latest Announcement -->
+    <!-- Announcements -->
     <div class="section">
       <div class="title">Latest Announcement</div>
       <div id="latestAnnouncement">Loading...</div>
@@ -241,25 +257,28 @@
     </div>
   </div>
 
-  <!-- Edit Modal -->
-  <div class="modal" id="badgeModal">
-    <div class="modal-content">
-      <h2>Edit Player Badge</h2>
-      <label for="editNickname">Nickname</label>
-      <input type="text" id="editNickname" placeholder="Enter nickname" />
-      <label for="editHandle">𝕏 Handle</label>
-      <input type="text" id="editHandle" placeholder="@handle" />
-      <label for="editRimColor">Badge Rim Color</label>
-      <input type="color" id="editRimColor" value="#00ffe1" />
-      <div class="modal-actions">
-        <button class="save" id="saveBadgeBtn">Save</button>
-        <button class="cancel" id="cancelBadgeBtn">Cancel</button>
-      </div>
+  <!-- Player Badge Edit Modal -->
+<div class="modal" id="badgeModal" style="position:fixed; inset:0; background:rgba(0,0,0,0.8); display:none; align-items:center; justify-content:center; z-index:9999;">
+  <div class="modal-content" style="background:#111; padding:24px; border-radius:14px; width:90%; max-width:360px; text-align:left; color:#fff; box-shadow:0 0 10px var(--accent);">
+    <h2 style="color:var(--accent); font-size:18px; margin-bottom:16px;">Edit Player Badge</h2>
+    
+    <label for="editNickname" style="font-size:12px; color:#aaa;">Nickname</label>
+    <input type="text" id="editNickname" placeholder="Enter nickname" style="width:100%; padding:10px; border-radius:8px; background:#000; border:1px solid #444; color:var(--accent); margin-top:4px;" />
+
+    <label for="editHandle" style="font-size:12px; color:#aaa; margin-top:12px; display:block;">𝕏 Handle</label>
+    <input type="text" id="editHandle" placeholder="@handle" style="width:100%; padding:10px; border-radius:8px; background:#000; border:1px solid #444; color:var(--accent); margin-top:4px;" />
+
+    <label for="editRimColor" style="font-size:12px; color:#aaa; margin-top:12px; display:block;">Badge Rim Color</label>
+    <input type="color" id="editRimColor" value="#00ffe1" style="width:100%; height:40px; border:none; border-radius:8px; margin-top:4px;" />
+
+    <div class="modal-actions" style="margin-top:16px; display:flex; justify-content:space-between;">
+      <button class="save" id="saveBadgeBtn" style="padding:10px 20px; border-radius:10px; background:var(--accent); color:#000; font-weight:bold;">Save</button>
+      <button class="cancel" id="cancelBadgeBtn" style="padding:10px 20px; border-radius:10px; background:#333; color:#fff;">Cancel</button>
     </div>
   </div>
-</body>
+</div>
 
-    <script type="module">
+  <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
 import {
   getFirestore, doc, getDoc, setDoc, collection, getDocs, query,
@@ -280,12 +299,6 @@ const db = getFirestore(app);
 let currentWallet = "";
 
 async function connectWalletAndLoad() {
-  // LIVE preview of rim color while editing
-document.getElementById("editRimColor").addEventListener("input", () => {
-  const color = document.getElementById("editRimColor").value;
-  document.getElementById("playerBadge").style.borderColor = color;
-  document.getElementById("badgePFP").style.borderColor = color;
-});
   if (!window.ethereum) {
     alert("Please install MetaMask");
     return;
@@ -308,15 +321,6 @@ document.getElementById("editRimColor").addEventListener("input", () => {
     document.getElementById("badgeY2K").textContent = `Y2K: ${data.earnings || 0}`;
     document.getElementById("badgeGames").textContent = `Games: ${data.games || 0}`;
     document.getElementById("badgeWins").textContent = `Wins: ${data.wins || 0}`;
-
-    if (data.badgeColor) {
-  document.getElementById("playerBadge").style.borderColor = data.badgeColor;
-  document.getElementById("badgePFP").style.borderColor = data.badgeColor;
-  document.getElementById("editRimColor").value = data.badgeColor;
-}
-
-    document.getElementById("editNickname").value = data.username || "";
-    document.getElementById("editHandle").value = data.xHandle || "";
   }
 
   try {
@@ -365,17 +369,12 @@ async function loadNewPlayers() {
   });
 }
 
-      async function loadActivityFeed() {
+function loadActivityFeed() {
   const feed = document.getElementById("activityFeed");
-  const q = query(
-    collection(db, "activity_log"),
-    orderBy("timestamp", "desc"),
-    limit(8)
-  );
+  const q = query(collection(db, "activity_log"), orderBy("timestamp", "desc"), limit(8));
 
   onSnapshot(q, (snap) => {
     feed.innerHTML = snap.empty ? "No recent activity." : "";
-
     snap.forEach(doc => {
       const d = doc.data();
       const time = new Date(d.timestamp).toLocaleTimeString([], {
@@ -391,61 +390,23 @@ async function loadNewPlayers() {
   });
 }
 
-document.getElementById("playerBadge").addEventListener("click", () => {
-  document.getElementById("badgeModal").style.display = "flex";
-});
-
-document.getElementById("cancelBadgeBtn").addEventListener("click", () => {
-  document.getElementById("badgeModal").style.display = "none";
-});
-
-document.getElementById("saveBadgeBtn").addEventListener("click", async () => {
-  const nickname = document.getElementById("editNickname").value.trim();
-  const handle = document.getElementById("editHandle").value.trim();
-  const rimColor = document.getElementById("editRimColor").value;
-
-  try {
-    await setDoc(doc(db, "users", currentWallet), {
-  username: nickname,
-  xHandle: handle,
-  badgeColor: rimColor,
-  lastUpdated: Date.now()
-}, { merge: true });
-
-// Log the update in activity_log
-await addDoc(collection(db, "activity_log"), {
-  user: currentWallet,
-  username: nickname || "anon",
-  timestamp: Date.now()
-});
-
-    // Update UI
-    document.getElementById("badgeNickname").textContent = nickname;
-    document.getElementById("badgeHandle").textContent = handle ? `𝕏: @${handle}` : "𝕏: N/A";
-    document.getElementById("playerBadge").style.borderColor = rimColor;
-    document.getElementById("badgePFP").style.borderColor = rimColor;
-    document.getElementById("badgeModal").style.display = "none";
-  } catch (err) {
-    console.error("Error saving badge:", err);
-    alert("Failed to save. Try again.");
+// Real-time chat listener (general)
+onSnapshot(
+  query(collection(db, "chat"), orderBy("timestamp", "asc"), limit(100)),
+  (snap) => {
+    const box = document.getElementById("chatBox");
+    box.innerHTML = "";
+    snap.forEach(doc => {
+      const m = doc.data();
+      const msg = document.createElement("div");
+      msg.innerHTML = `<strong style="color:var(--accent);">@${m.name || "anon"}:</strong> ${m.text}`;
+      box.appendChild(msg);
+    });
+    box.scrollTop = box.scrollHeight;
   }
-});
+);
 
-// CHAT: Real-time listener
-const chatRef = collection(db, "chat");
-onSnapshot(query(chatRef, orderBy("timestamp", "asc"), limit(100)), (snap) => {
-  const box = document.getElementById("chatBox");
-  box.innerHTML = "";
-  snap.forEach(doc => {
-    const m = doc.data();
-    const msg = document.createElement("div");
-    msg.innerHTML = `<strong style="color:#00ffe1;">@${m.name || "anon"}:</strong> ${m.text}`;
-    box.appendChild(msg);
-  });
-  box.scrollTop = box.scrollHeight;
-});
-
-// CHAT: Send message
+// Chat sender
 document.getElementById("sendMsgBtn").addEventListener("click", async () => {
   const input = document.getElementById("chatInput");
   const text = input.value.trim();
@@ -467,35 +428,54 @@ loadMVP();
 loadNewPlayers();
 loadActivityFeed();
 
-      function shareBadge() {
-  const nickname = document.getElementById("badgeNickname").textContent.replace(/^@/, "") || "anon";
-  const earnings = document.getElementById("badgeY2K").textContent.replace("Y2K: ", "") || "0";
-  const wins = document.getElementById("badgeWins").textContent.replace("Wins: ", "") || "0";
-  const games = document.getElementById("badgeGames").textContent.replace("Games: ", "") || "0";
-  const url = "https://y2kcoin.org";
-  const tags = "#CROFAM #puushfuncronos #Y2KCoin #Y2KxROAST";
+    // Edit modal trigger
+document.getElementById("playerBadge").addEventListener("click", () => {
+  document.getElementById("badgeModal").style.display = "flex";
+});
 
-  const postTemplates = [
-    `I just minted my badge in the Quantum Vault. Games played: ${games}, Wins: ${wins}, Y2K earned: ${earnings}.`,
-    `Verified in the Quantum Vault. Stats — Wins: ${wins}, Games: ${games}, Y2K: ${earnings}. Join us.`,
-    `Badge locked. Stats tracked. I'm in. Wins: ${wins}, Games: ${games}, $Y2K: ${earnings}.`,
-    `Badge flexed. Quantum Vault open. Games: ${games} | Wins: ${wins} | Y2K: ${earnings}.`,
-    `I didn’t just join. I activated. Vault stats — ${wins} wins, ${games} games, ${earnings} Y2K.`,
-    `Quantum Vault stats: ${games} games, ${wins} wins, ${earnings} Y2K. Badge secured.`,
-    `Minted identity. Quantum Vault stats: Y2K ${earnings}, Wins ${wins}, Games ${games}.`,
-    `Live inside the Quantum Vault. ${wins} wins. ${games} battles. ${earnings} Y2K to show.`,
-    `It’s not a badge. It’s a record. ${games} games. ${wins} wins. ${earnings} Y2K earned.`,
-    `I'm early, and I’ve got the badge to prove it. ${games} games | ${wins} wins | ${earnings} Y2K.`
-  ];
+// Live preview rim color
+document.getElementById("editRimColor").addEventListener("input", () => {
+  const color = document.getElementById("editRimColor").value;
+  document.getElementById("playerBadge").style.borderColor = color;
+  document.getElementById("badgePFP").style.borderColor = color;
+});
 
-  const randomText = postTemplates[Math.floor(Math.random() * postTemplates.length)];
-  const fullTweet = encodeURIComponent(`${randomText}\n\n→ ${url}\n${tags}`);
-  const shareUrl = `https://twitter.com/intent/tweet?text=${fullTweet}`;
-  window.open(shareUrl, '_blank');
-}
+// Cancel button
+document.getElementById("cancelBadgeBtn").addEventListener("click", () => {
+  document.getElementById("badgeModal").style.display = "none";
+});
 
-window.shareBadge = shareBadge;
-      
+// Save badge logic
+document.getElementById("saveBadgeBtn").addEventListener("click", async () => {
+  const nickname = document.getElementById("editNickname").value.trim();
+  const handle = document.getElementById("editHandle").value.trim();
+  const rimColor = document.getElementById("editRimColor").value;
+
+  try {
+    await setDoc(doc(db, "users", currentWallet), {
+      username: nickname,
+      xHandle: handle,
+      badgeColor: rimColor,
+      lastUpdated: Date.now()
+    }, { merge: true });
+
+    await addDoc(collection(db, "activity_log"), {
+      user: currentWallet,
+      username: nickname || "anon",
+      timestamp: Date.now()
+    });
+
+    document.getElementById("badgeNickname").textContent = nickname;
+    document.getElementById("badgeHandle").textContent = handle ? `𝕏: @${handle}` : "𝕏: N/A";
+    document.getElementById("playerBadge").style.borderColor = rimColor;
+    document.getElementById("badgePFP").style.borderColor = rimColor;
+    document.getElementById("badgeModal").style.display = "none";
+  } catch (err) {
+    console.error("Error saving badge:", err);
+    alert("Failed to save. Try again.");
+  }
+});
+   
 </script>
-</body>
+  </body>
 </html>
