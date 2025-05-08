@@ -349,11 +349,6 @@ document.getElementById("saveBadgeBtn").addEventListener("click", async () => {
   const handle = document.getElementById("editHandle").value.trim();
   const rimColor = document.getElementById("editRimColor").value;
 
-  if (!currentWallet) {
-    alert("Wallet not connected.");
-    return;
-  }
-
   try {
     await setDoc(doc(db, "users", currentWallet), {
       username: nickname,
