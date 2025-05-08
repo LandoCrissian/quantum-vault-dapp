@@ -375,46 +375,42 @@ document.getElementById("sendMsgBtn").addEventListener("click", async () => {
   input.value = "";
 });
 
-connectWalletAndLoad();
-loadMVP();
-loadNewPlayers();
-
-      function shareBadge() {
+// SHARE BADGE FEATURE
+function shareBadge() {
   const nickname = document.getElementById("badgeNickname").textContent.replace(/^@/, "") || "anon";
   const url = "https://quantum-vault-y2kxroast.netlify.app";
-  const tags = "#CROFAM #Y2K #QuantumVault";
+  const tags = "#CROFAM #puushduncronos #Y2KCoin #Y2KxROAST";
 
   const postTemplates = [
-    "I just unlocked my badge in the Quantum Vault. This isn’t just a flex — it’s an invite. Let’s build.",
-    "You’re early. I’m earlier. Badge claimed. Quantum Vault open.",
-    "Y2K energy only. Tap in, get your badge, and enter the Quantum Vault.",
-    "I didn’t just join, I activated. My badge is live. Yours?",
-    "This isn’t Web3. This is Quantum. Badge secured. Vault entered.",
-    "Verified, styled, and sealed. Grab your badge and join the Vault.",
-    "No roadmap needed. Just vibes, a badge, and a whole lotta $Y2K.",
-    "Your wallet says you belong. Your badge proves it. Join the Quantum Vault.",
-    "Not a member yet? Profile, badge, done. See you inside.",
-    "I’m not in the vault for the money. I’m in it for the moment. Badge linked.",
-    "The vault doesn’t open for everyone. Get your profile right.",
-    "Cosmic badge, cold profile. I’m all in.",
-    "Flexing my badge with pride. Quantum Vault style.",
-    "They said be early. I minted a whole identity.",
-    "Your name, your badge, your timeline. It starts now.",
-    "This ain’t no JPEG. It’s the badge that gets you in.",
-    "Y2K isn’t just a token — it’s a vibe. My badge is proof.",
-    "If you’re reading this, your wallet’s already late. Get the badge.",
-    "I clicked. I claimed. I’m inside.",
-    "Join the ones building the next era of digital identity."
+    "Verified identity. Styled badge. Enter the Vault. You know where to go.",
+    "Quantum Vault isn’t for everyone. I’m already in. Are you?",
+    "Secured my badge. Built on $Y2K. It’s more than a flex—it’s a signal.",
+    "The badge is more than a PFP. It’s your proof-of-play.",
+    "Early players earn more. Vault loaded. Badge ready. Tap in.",
+    "I minted my moment inside the Quantum Vault. Let the timeline know.",
+    "Web3's not dead. It just went quantum. #Y2KCoin is proof.",
+    "Got my Quantum Badge. Claim yours and build what’s next.",
+    "The CRO signal is strong inside the Vault. Join the wave.",
+    "Digital identity just evolved. Come see the future. I did.",
+    "Flexing my badge powered by $Y2K. You already late.",
+    "Built on Cronos. Fueled by Y2K. This badge is my pass.",
+    "No roadmap. No promises. Just vibes and value. #QuantumVault",
+    "From PFPs to proof of presence. I’m part of it now.",
+    "Badge earned. Status updated. Vault entered. You next?",
+    "We’re early. We’re loud. We’re live inside the Vault.",
+    "The Vault called. I answered. Badge secured on chain.",
+    "Your wallet belongs in here. Don’t wait. Claim the badge.",
+    "Quantum Vault is open. I’m already inside. Come find me.",
+    "This badge isn’t just aesthetic. It’s admission to a movement."
   ];
 
   const randomText = postTemplates[Math.floor(Math.random() * postTemplates.length)];
   const fullTweet = encodeURIComponent(`${randomText}\n\n@${nickname} → ${url}\n${tags}`);
   const shareUrl = `https://twitter.com/intent/tweet?text=${fullTweet}`;
   window.open(shareUrl, '_blank');
-  window.shareBadge = shareBadge;
-  
 }
-      
+
+window.shareBadge = shareBadge; // ✅ Must be outside so your button works
 </script>
 </body>
 </html>
