@@ -199,6 +199,11 @@
     </div>
 
     <div class="section">
+  <div class="title">Vault Activity Feed</div>
+  <div id="activityFeed">Loading activity...</div>
+</div>
+
+    <div class="section">
       <div class="title">New Players (Last 48h)</div>
       <div id="newPlayers">Loading...</div>
     </div>
@@ -333,6 +338,33 @@ async function loadNewPlayers() {
     tag.className = "badge";
     tag.textContent = "@" + (u.username || "anon");
     box.appendChild(tag);
+  });
+}
+
+      async function loadActivityFeed() {
+  const cutoff = Date.now() - (48 * 60 * 60 * 1000); // 48 hours
+  const q = query(
+    collection(db, "users"),
+    where("lastUpdated", ">", cutoff),
+    orderBy("lastUpdated", "desc")
+  );
+
+  onSnapshot(q, (snap) => {
+    const feed = document.getElementById("activityFeed");
+    feed.innerHTML = snap.empty ? "No recent activity." : "";
+
+    snap.forEach(doc => {
+      const d = doc.data();
+      const time = new Date(d.lastUpdated).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+
+      const item = document.createElement("div");
+      item.className = "wallet";
+      item.textContent = `@${d.username || "anon"} updated their badge at ${time}`;
+      feed.appendChild(item);
+    });
   });
 }
 
