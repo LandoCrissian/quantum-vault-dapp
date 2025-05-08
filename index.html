@@ -257,6 +257,31 @@
       </div>
     </div>
   </div>
+  <!-- Admin Tools Floating Button (only appears if admin wallet connects) -->
+<div id="adminButton" style="display:none; position:fixed; bottom:20px; right:20px; z-index:9999;">
+  <button style="background:#00ffe1; color:#000; border:none; padding:12px 16px; border-radius:12px; font-weight:bold; box-shadow:0 0 10px #00ffe1; cursor:pointer;">Admin Tools</button>
+</div>
+
+<!-- Admin Tools Modal -->
+<div id="adminPanel" class="modal">
+  <div class="modal-content" style="max-height:80vh; overflow-y:auto;">
+    <h2>Admin Panel</h2>
+
+    <label for="announcementInput">Update Announcement</label>
+    <input type="text" id="announcementInput" placeholder="New announcement..." />
+
+    <label for="mvpWallet">Set MVP by Wallet</label>
+    <input type="text" id="mvpWallet" placeholder="0x..." />
+
+    <label for="activityNote">Log Admin Activity</label>
+    <input type="text" id="activityNote" placeholder="e.g. Powerball round initiated" />
+
+    <div class="modal-actions">
+      <button class="save" id="saveAdminActions">Submit</button>
+      <button class="cancel" id="closeAdminPanel">Close</button>
+    </div>
+  </div>
+</div>
 </body>
 
     <script type="module">
@@ -495,6 +520,67 @@ loadActivityFeed();
 }
 
 window.shareBadge = shareBadge;
+
+      // Admin wallet address
+const adminWallet = "0x348c2f06c64b4465f90446fd806aff3a01220450";
+
+// Admin Tools button + modal
+const adminBtn = document.getElementById("adminButton");
+const adminPanel = document.getElementById("adminPanel");
+const closeAdminPanel = document.getElementById("closeAdminPanel");
+
+// Show admin tools only if the wallet is admin
+async function checkAdminAccess() {
+  if (currentWallet === adminWallet.toLowerCase()) {
+    adminBtn.style.display = "block";
+  }
+}
+
+// Open/close modal
+adminBtn.addEventListener("click", () => {
+  adminPanel.style.display = "flex";
+});
+closeAdminPanel.addEventListener("click", () => {
+  adminPanel.style.display = "none";
+});
+
+// Save admin actions
+document.getElementById("saveAdminActions").addEventListener("click", async () => {
+  const announcement = document.getElementById("announcementInput").value.trim();
+  const mvp = document.getElementById("mvpWallet").value.trim().toLowerCase();
+  const note = document.getElementById("activityNote").value.trim();
+
+  try {
+    if (announcement) {
+      await setDoc(doc(db, "vault_config", "latest"), { announcement }, { merge: true });
+      document.getElementById("latestAnnouncement").textContent = announcement;
+    }
+
+    if (mvp) {
+      const mvpSnap = await getDoc(doc(db, "users", mvp));
+      if (mvpSnap.exists()) {
+        const data = mvpSnap.data();
+        document.getElementById("mvpUser").textContent = "@" + (data.username || "anon");
+        document.getElementById("mvpEarnings").textContent = `${data.earnings || 0} Y2K Earned`;
+      }
+    }
+
+    if (note) {
+      await addDoc(collection(db, "activity_log"), {
+        user: currentWallet,
+        username: "Admin",
+        note,
+        timestamp: Date.now()
+      });
+    }
+
+    alert("Admin updates saved.");
+    adminPanel.style.display = "none";
+  } catch (err) {
+    console.error("Admin panel error:", err);
+    alert("Failed to update admin actions.");
+  }
+});
       
 </script>
 </body>
